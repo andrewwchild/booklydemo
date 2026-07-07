@@ -10,15 +10,15 @@ async function init() {
   try {
     const res = await fetch("/health");
     const data = await res.json();
-    statusEl.textContent = data.llm_mode === "live" ? `Live · ${data.model}` : "Mock mode (no API key)";
-    statusEl.classList.add(data.llm_mode);
+    statusEl.textContent = "Online";
+    statusEl.classList.add("online");
   } catch {
     statusEl.textContent = "Offline";
   }
 
   appendMessage(
     "assistant",
-    "Hi! I'm Bookly Support. I can help with order status, returns, shipping policies, or password resets. What can I help with today?"
+    "Hi! I'm Bookly Support. I can help with order status, returns, book availability, shipping policies, or password resets. How can I help you today?"
   );
 }
 
@@ -30,22 +30,11 @@ function appendMessage(role, text) {
   chatEl.scrollTop = chatEl.scrollHeight;
 }
 
-function appendToolCall(tc) {
-  const details = document.createElement("details");
-  details.className = "tool-call";
-  details.innerHTML = `
-    <summary>🔧 Tool: ${tc.name}</summary>
-    <pre>Args: ${JSON.stringify(tc.arguments, null, 2)}\n\nResult: ${JSON.stringify(tc.result, null, 2)}</pre>
-  `;
-  chatEl.appendChild(details);
-  chatEl.scrollTop = chatEl.scrollHeight;
-}
-
 function showTyping() {
   const el = document.createElement("div");
   el.className = "typing";
   el.id = "typing";
-  el.textContent = "Agent is thinking…";
+  el.textContent = "Bookly Support is typing…";
   chatEl.appendChild(el);
   chatEl.scrollTop = chatEl.scrollHeight;
 }
@@ -76,14 +65,10 @@ async function sendMessage(text) {
     const data = await res.json();
     sessionId = data.session_id;
     hideTyping();
-
-    for (const tc of data.tool_calls || []) {
-      appendToolCall(tc);
-    }
     appendMessage("assistant", data.reply);
   } catch (err) {
     hideTyping();
-    appendMessage("assistant", "Sorry, something went wrong. Please try again.");
+    appendMessage("assistant", "Sorry, something went wrong. Please try again in a moment.");
     console.error(err);
   } finally {
     inputEl.disabled = false;

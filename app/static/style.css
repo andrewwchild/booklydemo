@@ -77,12 +77,12 @@ h1 {
   color: var(--muted);
 }
 
-.status.live {
+.status.online {
   background: #1a3d2a;
   color: #6fcf97;
 }
 
-.status.mock {
+.status.rules {
   background: #3d3520;
   color: #f2c94c;
 }

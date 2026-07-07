@@ -27,8 +27,7 @@ def find_project_root() -> Path:
 
     raise RuntimeError(
         "Could not find the bookly-cs-agent project root. "
-        "Open the notebook from ~/Projects/bookly-cs-agent/notebooks/ "
-        "or run: %cd ~/Projects/bookly-cs-agent"
+        "Open the notebook from the project notebooks/ directory."
     )
 
 

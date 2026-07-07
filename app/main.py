@@ -34,7 +34,7 @@ class ToolCallInfo(BaseModel):
 class ChatResponse(BaseModel):
     reply: str
     session_id: str
-    mode: str
+    engine: str
     tool_calls: list[ToolCallInfo] = []
 
 
@@ -47,8 +47,8 @@ async def index():
 async def health():
     return {
         "status": "ok",
-        "llm_mode": "mock" if agent.use_mock else "live",
-        "model": agent.model if not agent.use_mock else None,
+        "llm_mode": "ai" if agent.llm_enabled else "rules",
+        "model": agent.model if agent.llm_enabled else None,
     }
 
 
@@ -67,7 +67,7 @@ async def chat(req: ChatRequest):
     return ChatResponse(
         reply=result["reply"],
         session_id=session_id,
-        mode=result["mode"],
+        engine=result.get("engine", "ai"),
         tool_calls=[
             ToolCallInfo(name=tc["name"], arguments=tc["arguments"], result=tc["result"])
             for tc in result.get("tool_calls", [])

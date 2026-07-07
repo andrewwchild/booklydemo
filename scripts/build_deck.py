@@ -73,13 +73,12 @@ def build_deck() -> Presentation:
         "Human in conversation, machine-precise on facts",
         "Transactional queries always use tools — never free-form generation",
         "One focused clarifying question at a time when info is missing",
-        "Tool results surfaced transparently in the demo UI",
     ], size=17)
     add_textbox(slide, Inches(7), Inches(2.8), Inches(5.5), Inches(3.8),
                 "User message\n      ↓\nHave order_id?\n   ↙     ↘\n Yes      No\n  ↓        ↓\nTool    Clarify",
                 size=15, color=MUTED, align=PP_ALIGN.CENTER)
     add_textbox(slide, Inches(0.8), Inches(6.5), Inches(11), Inches(0.5),
-                "Decagon Solutions Engineering Take-Home  ·  andrewwchild/booklydemo",
+                "Bookly Customer Support  ·  bookly.com",
                 size=12, color=MUTED)
     add_notes(slide, "I'd rather add one turn than ship a confident lie.")
 
@@ -92,19 +91,19 @@ def build_deck() -> Presentation:
                 "Thin orchestration + LLM reasoning + deterministic tools",
                 size=30, bold=True)
     arch = (
-        "Chat UI  →  FastAPI /api/chat  →  BooklyAgent  →  Mock Bookly APIs\n"
-        "                                      ├─ System prompt (clarify-first rules)\n"
-        "                                      ├─ ConversationMemory (slots + history)\n"
-        "                                      └─ OpenAI function calling (4 tools)"
+        "Chat UI  →  BooklyAgent  →  Bookly Service APIs\n"
+        "                              ├─ System prompt (clarify-first rules)\n"
+        "                              ├─ ConversationMemory (slots + history)\n"
+        "                              └─ OpenAI function calling (5 tools)"
     )
     add_textbox(slide, Inches(0.8), Inches(2.1), Inches(11.5), Inches(2.2), arch,
                 size=15, color=MUTED)
     tf = add_textbox(slide, Inches(0.8), Inches(4.5), Inches(11), Inches(2.5), "", size=16)
     add_bullets(tf, [
         "Orchestrator — runs LLM ↔ tool loop (up to 5 turns per message)",
-        "Tools — lookup_order · initiate_refund · get_policy · send_password_reset",
-        "Memory — per-session history + extracted slots (order_id, email, reason)",
-        "Prompts — clarify-first rules, tone guardrails, demo context",
+        "Tools — lookup_order · initiate_refund · check_stock · get_policy · send_password_reset",
+        "Memory — per-session history + extracted slots",
+        "Prompts — clarify-first rules and tone guardrails",
     ], size=17)
     add_notes(slide,
               "I avoided all-in-one agent platforms on purpose — ~300 lines of orchestration I can explain line by line.")
@@ -118,7 +117,7 @@ def build_deck() -> Presentation:
                 "Tools over RAG for transactions",
                 size=32, bold=True)
     add_textbox(slide, Inches(0.8), Inches(2.0), Inches(11), Inches(0.6),
-                "Order status & refunds use function calling to mock APIs — not vector search.",
+                "Order status, refunds, and inventory use function calling to Bookly APIs — not vector search.",
                 size=18, color=MUTED)
     tf = add_textbox(slide, Inches(0.8), Inches(2.8), Inches(5.2), Inches(3.5), "Pros", size=18, bold=True, color=GREEN)
     add_bullets(tf, [
@@ -156,7 +155,7 @@ def build_deck() -> Presentation:
         "Edge cases need tighter validation in production",
     ], size=16)
     add_textbox(slide, Inches(0.8), Inches(5.8), Inches(11.5), Inches(1.0),
-                'Demo: "I want a refund" → order ID → reason → email → initiate_refund',
+                'Example: "I want a refund" → order ID → reason → email → initiate_refund',
                 size=17, color=ACCENT, bold=True)
 
     # ── Slide 5: Production ─────────────────────────────────────────
@@ -170,7 +169,7 @@ def build_deck() -> Presentation:
     rows = [
         ("Gap today", "Production fix"),
         ("No automated tool-selection tests", "Golden-set evals: 50+ utterances → expected intent"),
-        ("Mock JSON data only", "OMS + Stripe + Zendesk integrations"),
+        ("JSON data stores", "OMS + inventory + CRM integrations"),
         ("No escalation path", "Confidence threshold → summarize → route to human"),
         ("In-process session memory", "Redis + customer auth for cross-device continuity"),
     ]

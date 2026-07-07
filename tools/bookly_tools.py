@@ -6,7 +6,7 @@ DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 
 def _load_orders() -> dict[str, Any]:
-    with open(DATA_DIR / "mock_orders.json") as f:
+    with open(DATA_DIR / "orders.json") as f:
         return json.load(f)
 
 
@@ -123,7 +123,7 @@ def list_catalog_summary() -> dict[str, Any]:
 
 
 def list_orders() -> dict[str, Any]:
-    """Return a summary of all demo orders for UI display."""
+    """Return a summary of all orders for display."""
     orders = _load_orders()
     rows = []
     for oid in sorted(orders):
@@ -224,7 +224,7 @@ def get_policy(topic: str) -> dict[str, Any]:
 
 
 def send_password_reset(email: str) -> dict[str, Any]:
-    """Send a password reset link to the customer's email (mocked)."""
+    """Send a password reset link to the customer's email."""
     email = email.strip().lower()
     if "@" not in email or "." not in email.split("@")[-1]:
         return {

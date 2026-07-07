@@ -17,17 +17,17 @@ class BooklyAgent:
     def __init__(self, api_key: str | None = None, model: str | None = None):
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         self.model = model or os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-        self.use_mock = not self.api_key
-        self._client = OpenAI(api_key=self.api_key) if not self.use_mock else None
+        self.llm_enabled = bool(self.api_key)
+        self._client = OpenAI(api_key=self.api_key) if self.llm_enabled else None
 
     def chat(self, memory: ConversationMemory, user_message: str) -> dict[str, Any]:
         memory.add_user_message(user_message)
         self._extract_slots(memory, user_message)
 
-        if self.use_mock:
-            return self._mock_response(memory, user_message)
+        if self.llm_enabled:
+            return self._llm_response(memory)
 
-        return self._llm_response(memory)
+        return self._rules_based_response(memory, user_message)
 
     def _llm_response(self, memory: ConversationMemory) -> dict[str, Any]:
         messages = [{"role": "system", "content": SYSTEM_PROMPT}, *memory.to_openai_messages()]
@@ -81,12 +81,12 @@ class BooklyAgent:
             return {
                 "reply": reply,
                 "tool_calls": tool_calls_made,
-                "mode": "live",
+                "engine": "ai",
             }
 
         reply = "I need a moment — could you rephrase your question?"
         memory.add_assistant_message(reply)
-        return {"reply": reply, "tool_calls": tool_calls_made, "mode": "live"}
+        return {"reply": reply, "tool_calls": tool_calls_made, "engine": "ai"}
 
     def _extract_slots(self, memory: ConversationMemory, text: str) -> None:
         order_match = re.search(r"ORD-\d{4}", text, re.IGNORECASE)
@@ -184,8 +184,7 @@ class BooklyAgent:
             memory.pending_intent = "order_status"
             memory.awaiting_slot = "order_id"
             return (
-                "I can look that up for you. What's your order ID? "
-                "(Demo orders: ORD-1001 through ORD-1015.)"
+                "I can look that up for you. What's your order ID?"
             )
 
         args = {"order_id": memory.slots["order_id"]}
@@ -202,8 +201,7 @@ class BooklyAgent:
             memory.pending_intent = "stock"
             memory.awaiting_slot = "book_title"
             return (
-                "I can check availability for you. Which book title are you looking for? "
-                "(Try 'Fourth Wing', 'Project Hail Mary', or 'Atomic Habits'.)"
+                "I can check availability for you. Which book title are you looking for?"
             )
 
         args = {"book_title": memory.slots["book_title"]}
@@ -248,8 +246,8 @@ class BooklyAgent:
         memory.slots.clear()
         return result["message"]
 
-    def _mock_response(self, memory: ConversationMemory, user_message: str) -> dict[str, Any]:
-        """Deterministic fallback when no API key — still demonstrates all assignment requirements."""
+    def _rules_based_response(self, memory: ConversationMemory, user_message: str) -> dict[str, Any]:
+        """Rules-based response path when the AI engine is unavailable."""
         lower = user_message.lower()
         tool_calls: list[dict[str, Any]] = []
         intent = self._detect_intent(user_message)
@@ -322,4 +320,4 @@ class BooklyAgent:
             )
 
         memory.add_assistant_message(reply)
-        return {"reply": reply, "tool_calls": tool_calls, "mode": "mock"}
+        return {"reply": reply, "tool_calls": tool_calls, "engine": "rules"}
