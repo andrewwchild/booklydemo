@@ -79,14 +79,27 @@ Run cells in `notebooks/bookly_demo.ipynb` **in order**:
 2. **Tool use:** "ORD-1001" → `lookup_order` runs, shows UPS tracking
 3. **Multi-turn refund:** "I want a refund" → reason → email → `initiate_refund` executes
 4. **Policy FAQ:** "What's your return policy?" → `get_policy` returns official text
+5. **Stock check:** "Is Fourth Wing in stock?" → `check_stock` returns catalog data
 
-### Test data
+### Test data (15 orders)
 
-| Order ID  | Email               | Status     |
-|-----------|---------------------|------------|
-| ORD-1001  | alice@example.com   | Shipped    |
-| ORD-1002  | bob@example.com     | Processing |
-| ORD-1003  | carol@example.com   | Delivered  |
+| Order ID  | Email               | Status           | Notes |
+|-----------|---------------------|------------------|-------|
+| ORD-1001  | alice@example.com   | Shipped          | Standard tracking demo |
+| ORD-1002  | bob@example.com     | Processing       | Not return-eligible |
+| ORD-1003  | carol@example.com   | Delivered        | Refund demo |
+| ORD-1004  | david@example.com   | Delivered        | Return window expired |
+| ORD-1005  | emma@example.com    | Shipped          | |
+| ORD-1006  | frank@example.com   | Delayed          | Weather delay |
+| ORD-1007  | grace@example.com   | Out for delivery | |
+| ORD-1008  | henry@example.com   | Cancelled        | |
+| ORD-1009  | iris@example.com    | Processing       | |
+| ORD-1010  | jack@example.com    | Delivered        | Refund demo |
+| ORD-1011  | kate@example.com    | Shipped          | |
+| ORD-1012  | liam@example.com    | Delivered        | |
+| ORD-1013  | mia@example.com     | Processing       | Gift order |
+| ORD-1014  | noah@example.com    | Shipped          | |
+| ORD-1015  | olivia@example.com  | Delivered        | |
 
 ## Architecture
 

@@ -13,6 +13,7 @@ import streamlit as st
 
 from agent.memory import ConversationMemory
 from agent.orchestrator import BooklyAgent
+from tools.bookly_tools import list_catalog_summary, list_orders
 
 load_dotenv(ROOT / ".env")
 
@@ -32,8 +33,8 @@ except Exception:
 QUICK_PROMPTS = [
     "Where is my order?",
     "I want a refund",
+    "Is Fourth Wing in stock?",
     "What's your return policy?",
-    "I can't log in",
 ]
 
 
@@ -118,15 +119,25 @@ if user_input := st.chat_input("Type your message…"):
 
 with st.sidebar:
     st.header("Demo data")
-    st.markdown(
-        """
-| Order | Email | Status |
-|-------|-------|--------|
-| ORD-1001 | alice@example.com | Shipped |
-| ORD-1002 | bob@example.com | Processing |
-| ORD-1003 | carol@example.com | Delivered |
-        """
-    )
+    st.caption(f"{list_orders()['count']} sample orders (ORD-1001 – ORD-1015)")
+    rows = ["| Order | Email | Status |", "|-------|-------|--------|"]
+    for o in list_orders()["orders"]:
+        rows.append(f"| {o['order_id']} | {o['email']} | {o['status'].title()} |")
+    st.markdown("\n".join(rows))
+    with st.expander("Interesting scenarios"):
+        st.markdown(
+            """
+- **ORD-1006** — delayed shipment (weather)
+- **ORD-1007** — out for delivery today
+- **ORD-1008** — cancelled order
+- **ORD-1004** — return window expired
+- **ORD-1010** — good refund demo with `jack@example.com`
+            """
+        )
+    catalog = list_catalog_summary()
+    st.header("Catalog")
+    st.caption(f"{catalog['total_titles']} titles · {catalog['out_of_stock']} out of stock")
+    st.markdown("**Out of stock:** " + ", ".join(catalog["out_of_stock_titles"][:5]) + ", …")
     st.header("Demo script")
     st.markdown(
         """

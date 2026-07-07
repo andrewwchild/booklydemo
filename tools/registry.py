@@ -1,6 +1,7 @@
 from typing import Any, Callable
 
 from tools.bookly_tools import (
+    check_stock,
     get_policy,
     initiate_refund,
     lookup_order,
@@ -84,6 +85,27 @@ TOOL_DEFINITIONS: list[dict[str, Any]] = [
     {
         "type": "function",
         "function": {
+            "name": "check_stock",
+            "description": (
+                "Check if a book is in stock and how many copies are available. "
+                "Use when a customer asks about availability, inventory, or whether "
+                "a specific title can be ordered. Requires a book title."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "book_title": {
+                        "type": "string",
+                        "description": "Title of the book to check, e.g. 'Fourth Wing'",
+                    }
+                },
+                "required": ["book_title"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "send_password_reset",
             "description": (
                 "Send a password reset email. Use when customer cannot log in "
@@ -107,6 +129,7 @@ TOOL_HANDLERS: dict[str, ToolHandler] = {
     "lookup_order": lookup_order,
     "initiate_refund": initiate_refund,
     "get_policy": get_policy,
+    "check_stock": check_stock,
     "send_password_reset": send_password_reset,
 }
 

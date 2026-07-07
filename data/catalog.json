@@ -1,0 +1,235 @@
+{
+  "books": [
+    {
+      "sku": "BK-001",
+      "title": "The Great Gatsby",
+      "author": "F. Scott Fitzgerald",
+      "in_stock": true,
+      "quantity": 42,
+      "price": 12.99,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-002",
+      "title": "1984",
+      "author": "George Orwell",
+      "in_stock": true,
+      "quantity": 28,
+      "price": 15.50,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-003",
+      "title": "Dune",
+      "author": "Frank Herbert",
+      "in_stock": true,
+      "quantity": 19,
+      "price": 16.99,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-004",
+      "title": "Sapiens",
+      "author": "Yuval Noah Harari",
+      "in_stock": true,
+      "quantity": 35,
+      "price": 18.00,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-005",
+      "title": "Atomic Habits",
+      "author": "James Clear",
+      "in_stock": true,
+      "quantity": 51,
+      "price": 16.00,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-006",
+      "title": "Project Hail Mary",
+      "author": "Andy Weir",
+      "in_stock": false,
+      "quantity": 0,
+      "price": 14.99,
+      "format": "hardcover",
+      "restock_date": "2026-07-20"
+    },
+    {
+      "sku": "BK-007",
+      "title": "The Hobbit",
+      "author": "J.R.R. Tolkien",
+      "in_stock": true,
+      "quantity": 22,
+      "price": 14.00,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-008",
+      "title": "The Lord of the Rings",
+      "author": "J.R.R. Tolkien",
+      "in_stock": true,
+      "quantity": 14,
+      "price": 28.00,
+      "format": "box set"
+    },
+    {
+      "sku": "BK-009",
+      "title": "Educated",
+      "author": "Tara Westover",
+      "in_stock": true,
+      "quantity": 8,
+      "price": 15.50,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-010",
+      "title": "Becoming",
+      "author": "Michelle Obama",
+      "in_stock": false,
+      "quantity": 0,
+      "price": 16.00,
+      "format": "paperback",
+      "restock_date": "2026-07-15"
+    },
+    {
+      "sku": "BK-011",
+      "title": "Where the Crawdads Sing",
+      "author": "Delia Owens",
+      "in_stock": true,
+      "quantity": 31,
+      "price": 12.99,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-012",
+      "title": "Thinking, Fast and Slow",
+      "author": "Daniel Kahneman",
+      "in_stock": true,
+      "quantity": 12,
+      "price": 18.00,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-013",
+      "title": "Fourth Wing",
+      "author": "Rebecca Yarros",
+      "in_stock": false,
+      "quantity": 0,
+      "price": 16.99,
+      "format": "hardcover",
+      "restock_date": "2026-07-18",
+      "note": "High demand — waitlist available"
+    },
+    {
+      "sku": "BK-014",
+      "title": "Iron Flame",
+      "author": "Rebecca Yarros",
+      "in_stock": true,
+      "quantity": 6,
+      "price": 12.99,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-015",
+      "title": "A Court of Thorns and Roses",
+      "author": "Sarah J. Maas",
+      "in_stock": true,
+      "quantity": 24,
+      "price": 13.99,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-016",
+      "title": "The Midnight Library",
+      "author": "Matt Haig",
+      "in_stock": true,
+      "quantity": 17,
+      "price": 13.50,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-017",
+      "title": "Tomorrow, and Tomorrow, and Tomorrow",
+      "author": "Gabrielle Zevin",
+      "in_stock": true,
+      "quantity": 9,
+      "price": 13.50,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-018",
+      "title": "The Alchemist",
+      "author": "Paulo Coelho",
+      "in_stock": true,
+      "quantity": 40,
+      "price": 11.00,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-019",
+      "title": "The Prophet",
+      "author": "Kahlil Gibran",
+      "in_stock": true,
+      "quantity": 15,
+      "price": 11.50,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-020",
+      "title": "It Ends with Us",
+      "author": "Colleen Hoover",
+      "in_stock": true,
+      "quantity": 20,
+      "price": 13.00,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-021",
+      "title": "It Starts with Us",
+      "author": "Colleen Hoover",
+      "in_stock": false,
+      "quantity": 0,
+      "price": 13.00,
+      "format": "paperback",
+      "restock_date": "2026-07-22"
+    },
+    {
+      "sku": "BK-022",
+      "title": "Clean Code",
+      "author": "Robert C. Martin",
+      "in_stock": true,
+      "quantity": 11,
+      "price": 32.00,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-023",
+      "title": "The Pragmatic Programmer",
+      "author": "David Thomas & Andrew Hunt",
+      "in_stock": true,
+      "quantity": 7,
+      "price": 26.00,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-024",
+      "title": "Little Women",
+      "author": "Louisa May Alcott",
+      "in_stock": true,
+      "quantity": 18,
+      "price": 11.99,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-025",
+      "title": "The Seven Husbands of Evelyn Hugo",
+      "author": "Taylor Jenkins Reid",
+      "in_stock": false,
+      "quantity": 0,
+      "price": 14.99,
+      "format": "paperback",
+      "restock_date": "2026-08-01"
+    }
+  ]
+}

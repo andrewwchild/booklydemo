@@ -15,6 +15,129 @@ def _load_policies() -> dict[str, Any]:
         return json.load(f)
 
 
+def _load_policies() -> dict[str, Any]:
+    with open(DATA_DIR / "policies.json") as f:
+        return json.load(f)
+
+
+def _load_catalog() -> dict[str, Any]:
+    with open(DATA_DIR / "catalog.json") as f:
+        return json.load(f)
+
+
+def _format_stock_message(book: dict[str, Any]) -> str:
+    if book["in_stock"]:
+        qty = book["quantity"]
+        note = f" ({qty} copies left)" if qty <= 10 else ""
+        return (
+            f"Yes — **{book['title']}** by {book['author']} is in stock{note}. "
+            f"${book['price']:.2f} ({book['format']})."
+        )
+    restock = book.get("restock_date")
+    extra = book.get("note", "")
+    msg = f"Sorry — **{book['title']}** is currently out of stock."
+    if restock:
+        msg += f" Expected restock: {restock}."
+    if extra:
+        msg += f" {extra}"
+    return msg
+
+
+def check_stock(book_title: str) -> dict[str, Any]:
+    """Check whether a book is in stock and how many copies are available."""
+    catalog = _load_catalog()
+    query = book_title.strip().lower()
+    if not query:
+        return {
+            "found": False,
+            "message": "Please provide a book title to check availability.",
+        }
+
+    books = catalog["books"]
+    exact = [b for b in books if b["title"].lower() == query]
+    partial = [b for b in books if query in b["title"].lower() and b not in exact]
+
+    if exact:
+        matches = exact
+    elif partial:
+        matches = partial
+    else:
+        return {
+            "found": False,
+            "query": book_title,
+            "message": (
+                f"No book found matching '{book_title}'. "
+                "Try the full title, e.g. 'Fourth Wing' or 'Project Hail Mary'."
+            ),
+        }
+
+    if len(matches) > 1:
+        return {
+            "found": True,
+            "multiple": True,
+            "query": book_title,
+            "matches": [
+                {
+                    "title": m["title"],
+                    "author": m["author"],
+                    "in_stock": m["in_stock"],
+                    "quantity": m["quantity"],
+                    "price": m["price"],
+                }
+                for m in matches
+            ],
+            "message": (
+                f"I found {len(matches)} matches for '{book_title}': "
+                + ", ".join(f"{m['title']} ({'in stock' if m['in_stock'] else 'out of stock'})" for m in matches)
+                + ". Which one did you mean?"
+            ),
+        }
+
+    book = matches[0]
+    return {
+        "found": True,
+        "multiple": False,
+        "sku": book["sku"],
+        "title": book["title"],
+        "author": book["author"],
+        "in_stock": book["in_stock"],
+        "quantity": book["quantity"],
+        "price": book["price"],
+        "format": book["format"],
+        "restock_date": book.get("restock_date"),
+        "message": _format_stock_message(book).replace("**", ""),
+    }
+
+
+def list_catalog_summary() -> dict[str, Any]:
+    """Return catalog stats for UI display."""
+    books = _load_catalog()["books"]
+    in_stock = [b for b in books if b["in_stock"]]
+    out_of_stock = [b for b in books if not b["in_stock"]]
+    return {
+        "total_titles": len(books),
+        "in_stock": len(in_stock),
+        "out_of_stock": len(out_of_stock),
+        "out_of_stock_titles": [b["title"] for b in out_of_stock],
+    }
+
+
+def list_orders() -> dict[str, Any]:
+    """Return a summary of all demo orders for UI display."""
+    orders = _load_orders()
+    rows = []
+    for oid in sorted(orders):
+        o = orders[oid]
+        rows.append({
+            "order_id": oid,
+            "email": o["customer_email"],
+            "status": o["status"],
+            "items": len(o["items"]),
+            "total": o["total"],
+        })
+    return {"count": len(rows), "orders": rows}
+
+
 def lookup_order(order_id: str) -> dict[str, Any]:
     """Look up order status and shipping details by order ID."""
     orders = _load_orders()
@@ -47,10 +170,11 @@ def initiate_refund(order_id: str, reason: str, customer_email: str) -> dict[str
         }
 
     if not order.get("eligible_for_return", False):
+        detail = order.get("return_ineligible_reason") or f"status: {order['status']}"
         return {
             "success": False,
             "order_id": order_id,
-            "message": f"Order {order_id} is not yet eligible for return (status: {order['status']}).",
+            "message": f"Order {order_id} is not eligible for return ({detail}).",
         }
 
     refund_id = f"RFD-{order_id.replace('ORD-', '')}"

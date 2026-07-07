@@ -7,6 +7,7 @@ from openai import OpenAI
 
 from agent.memory import ConversationMemory
 from agent.prompts import SYSTEM_PROMPT
+from tools.bookly_tools import _load_catalog
 from tools.registry import TOOL_DEFINITIONS, execute_tool
 
 
@@ -111,10 +112,25 @@ class BooklyAgent:
                 memory.set_slot("reason", reason)
                 break
 
+        self._extract_book_title(memory, text)
+
+    def _extract_book_title(self, memory: ConversationMemory, text: str) -> None:
+        catalog = _load_catalog()["books"]
+        lower = text.lower()
+        # Prefer longest title match to avoid partial hits
+        matches = [b for b in catalog if b["title"].lower() in lower]
+        if matches:
+            best = max(matches, key=lambda b: len(b["title"]))
+            memory.set_slot("book_title", best["title"])
+
     def _detect_intent(self, text: str) -> str | None:
         lower = text.lower()
         if any(w in lower for w in ["refund", "return", "send back"]):
             return "refund"
+        if any(w in lower for w in ["in stock", "instock", "available", "availability", "inventory"]):
+            return "stock"
+        if any(w in lower for w in ["do you have", "do you carry", "do you sell"]):
+            return "stock"
         if any(w in lower for w in ["order", "tracking", "shipment", "delivery", "where"]):
             return "order_status"
         if any(w in lower for w in ["password", "login", "reset", "log in", "can't log"]):
@@ -128,16 +144,33 @@ class BooklyAgent:
     def _format_order_reply(self, result: dict[str, Any]) -> str:
         if not result.get("found"):
             return result["message"]
+        if result["status"] == "processing":
+            return (
+                f"Order {result['order_id']} is still processing. "
+                f"Estimated delivery: {result['estimated_delivery']}."
+            )
         if result["status"] == "shipped":
             return (
                 f"Order {result['order_id']} shipped via {result['carrier']} on "
                 f"{result['shipped_date']}. Tracking: {result['tracking_number']}. "
                 f"Estimated delivery: {result['estimated_delivery']}."
             )
-        if result["status"] == "processing":
+        if result["status"] == "out_for_delivery":
             return (
-                f"Order {result['order_id']} is still processing. "
-                f"Estimated delivery: {result['estimated_delivery']}."
+                f"Order {result['order_id']} is out for delivery today via {result['carrier']}. "
+                f"Tracking: {result['tracking_number']}."
+            )
+        if result["status"] == "delayed":
+            reason = result.get("delay_reason", "carrier delay")
+            return (
+                f"Order {result['order_id']} is delayed — {reason}. "
+                f"New estimated delivery: {result['estimated_delivery']}. "
+                f"Tracking: {result['tracking_number']}."
+            )
+        if result["status"] == "cancelled":
+            return (
+                f"Order {result['order_id']} was cancelled on {result.get('cancelled_date', 'N/A')}. "
+                f"Reason: {result.get('cancel_reason', 'N/A')}."
             )
         return (
             f"Order {result['order_id']} was delivered on {result.get('delivered_date', 'N/A')}. "
@@ -152,7 +185,7 @@ class BooklyAgent:
             memory.awaiting_slot = "order_id"
             return (
                 "I can look that up for you. What's your order ID? "
-                "(Try ORD-1001, ORD-1002, or ORD-1003 in this demo.)"
+                "(Demo orders: ORD-1001 through ORD-1015.)"
             )
 
         args = {"order_id": memory.slots["order_id"]}
@@ -161,6 +194,24 @@ class BooklyAgent:
         memory.pending_intent = None
         memory.awaiting_slot = None
         return self._format_order_reply(result)
+
+    def _handle_stock_check(
+        self, memory: ConversationMemory, user_message: str, tool_calls: list[dict[str, Any]]
+    ) -> str:
+        if "book_title" not in memory.slots:
+            memory.pending_intent = "stock"
+            memory.awaiting_slot = "book_title"
+            return (
+                "I can check availability for you. Which book title are you looking for? "
+                "(Try 'Fourth Wing', 'Project Hail Mary', or 'Atomic Habits'.)"
+            )
+
+        args = {"book_title": memory.slots["book_title"]}
+        result = execute_tool("check_stock", args)
+        tool_calls.append({"name": "check_stock", "arguments": args, "result": result})
+        memory.pending_intent = None
+        memory.awaiting_slot = None
+        return result["message"]
 
     def _handle_refund(self, memory: ConversationMemory, tool_calls: list[dict[str, Any]]) -> str:
         missing = memory.missing_refund_slots()
@@ -213,6 +264,8 @@ class BooklyAgent:
             memory.awaiting_slot == "order_id" and "order_id" in memory.slots
         ):
             reply = self._handle_order_status(memory, tool_calls)
+        elif memory.pending_intent == "stock" or intent == "stock":
+            reply = self._handle_stock_check(memory, user_message, tool_calls)
         elif memory.pending_intent == "password_reset" or intent == "password_reset":
             if "customer_email" not in memory.slots:
                 memory.pending_intent = "password_reset"
@@ -237,7 +290,7 @@ class BooklyAgent:
         elif intent == "greeting":
             reply = (
                 "Hi! I'm Bookly Support. I can help with order status, returns, "
-                "shipping policies, or password resets. What can I help with today?"
+                "book availability, shipping policies, or password resets. What can I help with today?"
             )
         elif memory.awaiting_slot == "customer_email" and "customer_email" in memory.slots:
             args = {"email": memory.slots["customer_email"]}
@@ -246,20 +299,26 @@ class BooklyAgent:
             memory.pending_intent = None
             memory.awaiting_slot = None
             reply = result["message"]
+        elif memory.awaiting_slot == "book_title" and "book_title" in memory.slots:
+            reply = self._handle_stock_check(memory, user_message, tool_calls)
         elif memory.awaiting_slot and memory.awaiting_slot in memory.slots:
             if memory.pending_intent == "refund":
                 reply = self._handle_refund(memory, tool_calls)
             elif memory.pending_intent == "order_status":
                 reply = self._handle_order_status(memory, tool_calls)
+            elif memory.pending_intent == "stock":
+                reply = self._handle_stock_check(memory, user_message, tool_calls)
             else:
                 reply = (
                     "I want to make sure I help with the right thing. "
-                    "Are you asking about an order, a return/refund, shipping policy, or account access?"
+                    "Are you asking about an order, book availability, a return/refund, "
+                    "shipping policy, or account access?"
                 )
         else:
             reply = (
                 "I want to make sure I help with the right thing. "
-                "Are you asking about an order, a return/refund, shipping policy, or account access?"
+                "Are you asking about an order, book availability, a return/refund, "
+                "shipping policy, or account access?"
             )
 
         memory.add_assistant_message(reply)
