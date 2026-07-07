@@ -1,8 +1,10 @@
 """Streamlit chat UI for the Bookly customer support agent."""
 
+import json
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
@@ -13,9 +15,34 @@ import streamlit as st
 
 from agent.memory import ConversationMemory
 from agent.orchestrator import BooklyAgent
-from tools.bookly_tools import list_catalog_summary, list_orders
 
 load_dotenv(ROOT / ".env")
+
+
+def _load_demo_orders() -> list[dict[str, Any]]:
+    path = ROOT / "data" / "mock_orders.json"
+    with open(path) as f:
+        orders = json.load(f)
+    return [
+        {
+            "order_id": oid,
+            "email": o["customer_email"],
+            "status": o["status"],
+        }
+        for oid, o in sorted(orders.items())
+    ]
+
+
+def _load_catalog_summary() -> dict[str, Any]:
+    path = ROOT / "data" / "catalog.json"
+    with open(path) as f:
+        books = json.load(f)["books"]
+    out = [b["title"] for b in books if not b["in_stock"]]
+    return {
+        "total_titles": len(books),
+        "out_of_stock": len(out),
+        "out_of_stock_titles": out,
+    }
 
 st.set_page_config(
     page_title="Bookly Support",
@@ -49,7 +76,7 @@ def init_session() -> None:
                 "role": "assistant",
                 "content": (
                     "Hi! I'm Bookly Support. I can help with order status, returns, "
-                    "shipping policies, or password resets. What can I help with today?"
+                    "book availability, shipping policies, or password resets. What can I help with today?"
                 ),
             }
         ]
@@ -62,7 +89,7 @@ def reset_chat() -> None:
             "role": "assistant",
             "content": (
                 "Hi! I'm Bookly Support. I can help with order status, returns, "
-                "shipping policies, or password resets. What can I help with today?"
+                "book availability, shipping policies, or password resets. What can I help with today?"
             ),
         }
     ]
@@ -119,9 +146,10 @@ if user_input := st.chat_input("Type your message…"):
 
 with st.sidebar:
     st.header("Demo data")
-    st.caption(f"{list_orders()['count']} sample orders (ORD-1001 – ORD-1015)")
+    orders = _load_demo_orders()
+    st.caption(f"{len(orders)} sample orders (ORD-1001 – ORD-1015)")
     rows = ["| Order | Email | Status |", "|-------|-------|--------|"]
-    for o in list_orders()["orders"]:
+    for o in orders:
         rows.append(f"| {o['order_id']} | {o['email']} | {o['status'].title()} |")
     st.markdown("\n".join(rows))
     with st.expander("Interesting scenarios"):
@@ -134,7 +162,7 @@ with st.sidebar:
 - **ORD-1010** — good refund demo with `jack@example.com`
             """
         )
-    catalog = list_catalog_summary()
+    catalog = _load_catalog_summary()
     st.header("Catalog")
     st.caption(f"{catalog['total_titles']} titles · {catalog['out_of_stock']} out of stock")
     st.markdown("**Out of stock:** " + ", ".join(catalog["out_of_stock_titles"][:5]) + ", …")
@@ -142,7 +170,8 @@ with st.sidebar:
     st.markdown(
         """
 1. **Order status** → give `ORD-1001`
-2. **Refund** → order ID, reason, email
-3. **Policy** → return policy question
+2. **Stock check** → "Is Fourth Wing in stock?"
+3. **Refund** → order ID, reason, email
+4. **Policy** → return policy question
         """
     )
