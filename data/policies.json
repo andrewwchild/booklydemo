@@ -1,0 +1,16 @@
+{
+  "shipping": {
+    "standard": "Free standard shipping on orders over $25. Delivery in 5-7 business days.",
+    "express": "Express shipping ($9.99) delivers in 2-3 business days.",
+    "international": "International shipping available to 40+ countries. Rates calculated at checkout."
+  },
+  "returns": {
+    "window": "30 days from delivery for unused items in original packaging.",
+    "process": "Initiate a return in chat or your account. Print the prepaid label and drop off at any carrier location.",
+    "refund_timing": "Refunds process within 5-7 business days after we receive the return."
+  },
+  "password_reset": {
+    "instructions": "Go to bookly.com/reset, enter your email, and click the link we send. Links expire in 1 hour.",
+    "support_escalation": "If you don't receive the email within 10 minutes, check spam or contact support with your account email."
+  }
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookly Support</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <span class="logo">📚</span>
+        <div>
+          <h1>Bookly Support</h1>
+          <p class="subtitle">AI Customer Service Agent — Demo</p>
+        </div>
+      </div>
+      <div class="status" id="status">Connecting…</div>
+    </header>
+
+    <main id="chat" aria-live="polite"></main>
+
+    <div class="suggestions" id="suggestions">
+      <button type="button" data-msg="Where is my order?">Order status</button>
+      <button type="button" data-msg="I want a refund">Start a return</button>
+      <button type="button" data-msg="What's your return policy?">Return policy</button>
+      <button type="button" data-msg="I can't log in">Password reset</button>
+    </div>
+
+    <form id="form" class="input-row">
+      <input
+        id="input"
+        type="text"
+        placeholder="Type your message…"
+        autocomplete="off"
+        required
+      />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script src="/static/chat.js"></script>
+</body>
+</html>

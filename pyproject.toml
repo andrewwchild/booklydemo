@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bookly-cs-agent"
+version = "0.1.0"
+description = "Bookly customer support agent demo"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "openai>=1.55.0",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.10.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["agent*", "tools*", "app*"]
