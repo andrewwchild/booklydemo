@@ -15,11 +15,6 @@ def _load_policies() -> dict[str, Any]:
         return json.load(f)
 
 
-def _load_policies() -> dict[str, Any]:
-    with open(DATA_DIR / "policies.json") as f:
-        return json.load(f)
-
-
 def _load_catalog() -> dict[str, Any]:
     with open(DATA_DIR / "catalog.json") as f:
         return json.load(f)
@@ -150,6 +145,59 @@ def lookup_order(order_id: str) -> dict[str, Any]:
         }
     order = orders[order_id]
     return {"found": True, **order}
+
+
+def verify_customer_identity(order_id: str, customer_email: str) -> dict[str, Any]:
+    """Verify that the customer's email matches the order before processing a return."""
+    orders = _load_orders()
+    order_id = order_id.strip().upper()
+    email = customer_email.strip().lower()
+
+    if order_id not in orders:
+        return {
+            "verified": False,
+            "order_id": order_id,
+            "message": f"We couldn't find order {order_id}. Please check your order ID.",
+        }
+
+    order = orders[order_id]
+    on_file = order.get("customer_email", "").lower()
+    if on_file != email:
+        return {
+            "verified": False,
+            "order_id": order_id,
+            "message": (
+                "The email you provided doesn't match our records for this order. "
+                "Please verify the email used at checkout."
+            ),
+        }
+
+    name = order.get("customer_name", "valued customer")
+    return {
+        "verified": True,
+        "order_id": order_id,
+        "customer_email": email,
+        "customer_name": name,
+        "message": f"Identity verified for order {order_id} ({name}).",
+    }
+
+
+def escalate_to_human(conversation_summary: str, reason: str) -> dict[str, Any]:
+    """Create a support ticket and hand off to a human agent with conversation context."""
+    import uuid
+
+    ticket_id = f"ESC-{uuid.uuid4().hex[:6].upper()}"
+    return {
+        "success": True,
+        "ticket_id": ticket_id,
+        "reason": reason,
+        "summary": conversation_summary,
+        "estimated_wait": "5 minutes",
+        "message": (
+            f"I've escalated this to a Bookly specialist. Your ticket number is {ticket_id}. "
+            f"An agent will join within 5 minutes with full context from our conversation."
+        ),
+    }
 
 
 def initiate_refund(order_id: str, reason: str, customer_email: str) -> dict[str, Any]:

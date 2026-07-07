@@ -2,10 +2,12 @@ from typing import Any, Callable
 
 from tools.bookly_tools import (
     check_stock,
+    escalate_to_human,
     get_policy,
     initiate_refund,
     lookup_order,
     send_password_reset,
+    verify_customer_identity,
 )
 
 ToolHandler = Callable[..., dict[str, Any]]
@@ -29,6 +31,30 @@ TOOL_DEFINITIONS: list[dict[str, Any]] = [
                     }
                 },
                 "required": ["order_id"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "verify_customer_identity",
+            "description": (
+                "Verify that the customer's email matches the order before processing a return. "
+                "Always call this before initiate_refund once you have order_id and customer_email."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "order_id": {
+                        "type": "string",
+                        "description": "Order ID to verify, e.g. ORD-1001",
+                    },
+                    "customer_email": {
+                        "type": "string",
+                        "description": "Email the customer says is on the order",
+                    },
+                },
+                "required": ["order_id", "customer_email"],
             },
         },
     },
@@ -123,14 +149,41 @@ TOOL_DEFINITIONS: list[dict[str, Any]] = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "escalate_to_human",
+            "description": (
+                "Hand off the conversation to a human support specialist with a summary. "
+                "Use when the customer asks to speak to a person, is frustrated, or the issue "
+                "cannot be resolved with available tools."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "conversation_summary": {
+                        "type": "string",
+                        "description": "Brief summary of the conversation so far for the human agent",
+                    },
+                    "reason": {
+                        "type": "string",
+                        "description": "Why the customer is being escalated",
+                    },
+                },
+                "required": ["conversation_summary", "reason"],
+            },
+        },
+    },
 ]
 
 TOOL_HANDLERS: dict[str, ToolHandler] = {
     "lookup_order": lookup_order,
+    "verify_customer_identity": verify_customer_identity,
     "initiate_refund": initiate_refund,
     "get_policy": get_policy,
     "check_stock": check_stock,
     "send_password_reset": send_password_reset,
+    "escalate_to_human": escalate_to_human,
 }
 
 

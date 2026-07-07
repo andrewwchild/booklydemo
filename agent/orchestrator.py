@@ -7,6 +7,7 @@ from openai import OpenAI
 
 from agent.memory import ConversationMemory
 from agent.prompts import SYSTEM_PROMPT
+from agent.summary import build_conversation_summary
 from tools.bookly_tools import _load_catalog
 from tools.registry import TOOL_DEFINITIONS, execute_tool
 
@@ -123,8 +124,40 @@ class BooklyAgent:
             best = max(matches, key=lambda b: len(b["title"]))
             memory.set_slot("book_title", best["title"])
 
+    def _detect_escalation(self, text: str) -> bool:
+        lower = text.lower()
+        triggers = [
+            "speak to",
+            "talk to",
+            "real person",
+            "human",
+            "representative",
+            "someone else",
+            "manager",
+            "supervisor",
+            "escalate",
+            "agent please",
+        ]
+        return any(t in lower for t in triggers)
+
+    def _handle_escalation(
+        self, memory: ConversationMemory, user_message: str, tool_calls: list[dict[str, Any]]
+    ) -> str:
+        summary = build_conversation_summary(memory)
+        reason = user_message.strip() or "Customer requested a human agent"
+        args = {"conversation_summary": summary, "reason": reason}
+        result = execute_tool("escalate_to_human", args)
+        tool_calls.append({"name": "escalate_to_human", "arguments": args, "result": result})
+        memory.pending_intent = None
+        memory.awaiting_slot = None
+        return result["message"]
+
     def _detect_intent(self, text: str) -> str | None:
         lower = text.lower()
+        if re.search(r"ORD-\d{4}", text, re.IGNORECASE):
+            return "order_status"
+        if any(w in lower for w in ["return policy", "shipping policy", "policy"]):
+            return "policy"
         if any(w in lower for w in ["refund", "return", "send back"]):
             return "refund"
         if any(w in lower for w in ["in stock", "instock", "available", "availability", "inventory"]):
@@ -236,11 +269,24 @@ class BooklyAgent:
 
         args = {
             "order_id": memory.slots["order_id"],
+            "customer_email": memory.slots["customer_email"],
+        }
+        verify_result = execute_tool("verify_customer_identity", args)
+        tool_calls.append(
+            {"name": "verify_customer_identity", "arguments": args, "result": verify_result}
+        )
+        if not verify_result.get("verified"):
+            memory.pending_intent = None
+            memory.awaiting_slot = None
+            return verify_result["message"]
+
+        refund_args = {
+            "order_id": memory.slots["order_id"],
             "reason": memory.slots["reason"],
             "customer_email": memory.slots["customer_email"],
         }
-        result = execute_tool("initiate_refund", args)
-        tool_calls.append({"name": "initiate_refund", "arguments": args, "result": result})
+        result = execute_tool("initiate_refund", refund_args)
+        tool_calls.append({"name": "initiate_refund", "arguments": refund_args, "result": result})
         memory.pending_intent = None
         memory.awaiting_slot = None
         memory.slots.clear()
@@ -252,8 +298,16 @@ class BooklyAgent:
         tool_calls: list[dict[str, Any]] = []
         intent = self._detect_intent(user_message)
 
+        if self._detect_escalation(user_message):
+            reply = self._handle_escalation(memory, user_message, tool_calls)
+            memory.add_assistant_message(reply)
+            return {"reply": reply, "tool_calls": tool_calls, "engine": "rules"}
+
         if intent:
-            memory.pending_intent = intent if intent != "greeting" else None
+            if intent == "greeting":
+                memory.pending_intent = None
+            elif memory.awaiting_slot is None:
+                memory.pending_intent = intent
 
         # Continue in-flight flows when user replies with a slot value
         if memory.pending_intent == "refund" or intent == "refund":

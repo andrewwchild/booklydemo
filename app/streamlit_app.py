@@ -35,6 +35,7 @@ QUICK_PROMPTS = [
     "I want a refund",
     "Is Fourth Wing in stock?",
     "What's your return policy?",
+    "I need to speak to a real person",
 ]
 
 GREETING = (

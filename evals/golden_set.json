@@ -1,0 +1,185 @@
+{
+  "description": "Golden-set eval cases for Bookly support agent (rules engine)",
+  "cases": [
+    {
+      "id": "greeting",
+      "turns": ["Hello"],
+      "expect_tools": [],
+      "expect_reply_contains": ["help"]
+    },
+    {
+      "id": "order_clarify",
+      "turns": ["Where is my order?"],
+      "expect_tools": [],
+      "expect_reply_contains": ["order ID"]
+    },
+    {
+      "id": "order_lookup",
+      "turns": ["Where is my order?", "ORD-1001"],
+      "expect_tools": ["lookup_order"],
+      "expect_reply_contains": ["ORD-1001"]
+    },
+    {
+      "id": "order_not_found",
+      "turns": ["ORD-9999"],
+      "expect_tools": ["lookup_order"],
+      "expect_reply_contains": ["No order found"]
+    },
+    {
+      "id": "order_delayed",
+      "turns": ["ORD-1006"],
+      "expect_tools": ["lookup_order"],
+      "expect_reply_contains": ["delayed"]
+    },
+    {
+      "id": "order_cancelled",
+      "turns": ["What's the status of ORD-1008?"],
+      "expect_tools": ["lookup_order"],
+      "expect_reply_contains": ["cancelled"]
+    },
+    {
+      "id": "stock_direct",
+      "turns": ["Is Fourth Wing in stock?"],
+      "expect_tools": ["check_stock"],
+      "expect_reply_contains": ["out of stock"]
+    },
+    {
+      "id": "stock_in_stock",
+      "turns": ["Do you have Atomic Habits?"],
+      "expect_tools": ["check_stock"],
+      "expect_reply_contains": ["in stock"]
+    },
+    {
+      "id": "stock_clarify",
+      "turns": ["Is it in stock?"],
+      "expect_tools": [],
+      "expect_reply_contains": ["which book"]
+    },
+    {
+      "id": "stock_multiturn",
+      "turns": ["Is it in stock?", "Project Hail Mary"],
+      "expect_tools": ["check_stock"],
+      "expect_reply_contains": ["out of stock"]
+    },
+    {
+      "id": "policy_returns",
+      "turns": ["What's your return policy?"],
+      "expect_tools": ["get_policy"],
+      "expect_reply_contains": ["30 days"]
+    },
+    {
+      "id": "policy_shipping",
+      "turns": ["How does shipping work?"],
+      "expect_tools": ["get_policy"],
+      "expect_reply_contains": ["shipping"]
+    },
+    {
+      "id": "password_reset",
+      "turns": ["I can't log in", "alice@example.com"],
+      "expect_tools": ["send_password_reset"],
+      "expect_reply_contains": ["reset link"]
+    },
+    {
+      "id": "refund_start",
+      "turns": ["I want a refund"],
+      "expect_tools": [],
+      "expect_reply_contains": ["order ID"]
+    },
+    {
+      "id": "refund_collect_reason",
+      "turns": ["I want a refund", "ORD-1003"],
+      "expect_tools": [],
+      "expect_reply_contains": ["reason"]
+    },
+    {
+      "id": "refund_collect_email",
+      "turns": ["I want a refund", "ORD-1003", "damaged book"],
+      "expect_tools": [],
+      "expect_reply_contains": ["email"]
+    },
+    {
+      "id": "refund_verify_and_process",
+      "turns": ["I want a refund", "ORD-1003", "damaged", "carol@example.com"],
+      "expect_tools": ["verify_customer_identity", "initiate_refund"],
+      "expect_reply_contains": ["Return initiated"]
+    },
+    {
+      "id": "refund_wrong_email",
+      "turns": ["I want a refund", "ORD-1003", "damaged", "wrong@example.com"],
+      "expect_tools": ["verify_customer_identity"],
+      "expect_reply_contains": ["doesn't match"]
+    },
+    {
+      "id": "refund_ineligible",
+      "turns": ["I want a refund", "ORD-1002", "changed my mind", "bob@example.com"],
+      "expect_tools": ["verify_customer_identity", "initiate_refund"],
+      "expect_reply_contains": ["not eligible"]
+    },
+    {
+      "id": "escalate_human",
+      "turns": ["I need to speak to a real person"],
+      "expect_tools": ["escalate_to_human"],
+      "expect_reply_contains": ["ticket"]
+    },
+    {
+      "id": "escalate_representative",
+      "turns": ["Can I talk to a representative?"],
+      "expect_tools": ["escalate_to_human"],
+      "expect_reply_contains": ["specialist"]
+    },
+    {
+      "id": "escalate_with_context",
+      "turns": ["Where is my order?", "ORD-1001", "I want to speak to someone"],
+      "expect_tools": ["lookup_order", "escalate_to_human"],
+      "expect_reply_contains": ["ticket"]
+    },
+    {
+      "id": "ambiguous_clarify",
+      "turns": ["Help me with something"],
+      "expect_tools": [],
+      "expect_reply_contains": ["order", "book"]
+    },
+    {
+      "id": "tracking_query",
+      "turns": ["Track my shipment ORD-1005"],
+      "expect_tools": ["lookup_order"],
+      "expect_reply_contains": ["UPS"]
+    },
+    {
+      "id": "out_for_delivery",
+      "turns": ["ORD-1007"],
+      "expect_tools": ["lookup_order"],
+      "expect_reply_contains": ["out for delivery"]
+    },
+    {
+      "id": "password_clarify",
+      "turns": ["I forgot my password"],
+      "expect_tools": [],
+      "expect_reply_contains": ["email"]
+    },
+    {
+      "id": "delivered_order",
+      "turns": ["ORD-1003"],
+      "expect_tools": ["lookup_order"],
+      "expect_reply_contains": ["delivered"]
+    },
+    {
+      "id": "escalate_supervisor",
+      "turns": ["Get me a supervisor please"],
+      "expect_tools": ["escalate_to_human"],
+      "expect_reply_contains": ["ticket"]
+    },
+    {
+      "id": "refund_window_expired",
+      "turns": ["I want a refund", "ORD-1004", "wrong item", "david@example.com"],
+      "expect_tools": ["verify_customer_identity", "initiate_refund"],
+      "expect_reply_contains": ["not eligible"]
+    },
+    {
+      "id": "stock_sapiens",
+      "turns": ["Is Sapiens available?"],
+      "expect_tools": ["check_stock"],
+      "expect_reply_contains": ["in stock"]
+    }
+  ]
+}

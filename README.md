@@ -36,7 +36,8 @@ Host the Streamlit app on [Streamlit Community Cloud](https://share.streamlit.io
 | Intent | Tool | Description |
 |--------|------|-------------|
 | Order status | `lookup_order` | Tracking, delivery, and order details |
-| Returns | `initiate_refund` | Start a return with identity verification |
+| Returns | `verify_customer_identity` + `initiate_refund` | Identity check before processing returns |
+| Escalation | `escalate_to_human` | Hand off to a specialist with conversation summary |
 | Inventory | `check_stock` | Real-time book availability |
 | Policies | `get_policy` | Shipping, returns, and account help |
 | Account | `send_password_reset` | Password reset emails |
@@ -69,6 +70,16 @@ notebooks/      # Agent evaluation notebook
 | `OPENAI_MODEL` | Optional | Defaults to `gpt-4o-mini` |
 
 Without an API key, the rules-based engine handles structured requests.
+
+## Eval harness
+
+Run golden-set tests against the rules engine:
+
+```bash
+python evals/run_evals.py
+```
+
+The harness checks ~25 cases for correct tool selection, clarifying questions, and response content.
 
 ## License
 
