@@ -5,12 +5,11 @@ from pathlib import Path
 
 from pptx import Presentation
 from pptx.dml.color import RGBColor
-from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+from pptx.enum.text import PP_ALIGN
 from pptx.util import Inches, Pt
 
 OUTPUT = Path(__file__).resolve().parent.parent / "Bookly_CS_Agent_Pitch.pptx"
 
-# Colors
 BG_DARK = RGBColor(15, 20, 25)
 ACCENT = RGBColor(79, 140, 255)
 TEXT = RGBColor(232, 237, 244)
@@ -38,19 +37,17 @@ def add_textbox(slide, left, top, width, height, text, size=18, bold=False, colo
     return tf
 
 
-def add_bullets(tf, items, size=16, color=TEXT, level=0):
+def add_bullets(tf, items, size=16, color=TEXT):
     for i, item in enumerate(items):
         p = tf.paragraphs[0] if i == 0 and not tf.paragraphs[0].text else tf.add_paragraph()
         p.text = item
-        p.level = level
         p.font.size = Pt(size)
         p.font.color.rgb = color
         p.space_after = Pt(8)
 
 
 def add_notes(slide, text: str) -> None:
-    notes = slide.notes_slide.notes_text_frame
-    notes.text = text
+    slide.notes_slide.notes_text_frame.text = text
 
 
 def build_deck() -> Presentation:
@@ -59,7 +56,7 @@ def build_deck() -> Presentation:
     prs.slide_height = Inches(7.5)
     blank = prs.slide_layouts[6]
 
-    # ── Slide 1: Title + Thesis ─────────────────────────────────────
+    # Slide 1 — Title
     slide = prs.slides.add_slide(blank)
     set_slide_bg(slide, BG_DARK)
     add_textbox(slide, Inches(0.8), Inches(0.6), Inches(11), Inches(0.6),
@@ -75,14 +72,14 @@ def build_deck() -> Presentation:
         "One focused clarifying question at a time when info is missing",
     ], size=17)
     add_textbox(slide, Inches(7), Inches(2.8), Inches(5.5), Inches(3.8),
-                "User message\n      ↓\nHave order_id?\n   ↙     ↘\n Yes      No\n  ↓        ↓\nTool    Clarify",
+                "User message\n      ↓\nHave required info?\n   ↙     ↘\n Yes      No\n  ↓        ↓\nTool    Clarify",
                 size=15, color=MUTED, align=PP_ALIGN.CENTER)
     add_textbox(slide, Inches(0.8), Inches(6.5), Inches(11), Inches(0.5),
-                "Bookly Customer Support  ·  bookly.com",
+                "Andrew Child  ·  github.com/andrewwchild/booklydemo  ·  booklydemo.streamlit.app",
                 size=12, color=MUTED)
     add_notes(slide, "I'd rather add one turn than ship a confident lie.")
 
-    # ── Slide 2: Architecture ─────────────────────────────────────────
+    # Slide 2 — Architecture
     slide = prs.slides.add_slide(blank)
     set_slide_bg(slide, BG_DARK)
     add_textbox(slide, Inches(0.8), Inches(0.5), Inches(11), Inches(0.8),
@@ -91,102 +88,164 @@ def build_deck() -> Presentation:
                 "Thin orchestration + LLM reasoning + deterministic tools",
                 size=30, bold=True)
     arch = (
-        "Chat UI  →  BooklyAgent  →  Bookly Service APIs\n"
-        "                              ├─ System prompt (clarify-first rules)\n"
+        "Customer → Streamlit UI → BooklyAgent (orchestrator)\n"
         "                              ├─ ConversationMemory (slots + history)\n"
-        "                              └─ OpenAI function calling (5 tools)"
+        "                              ├─ System prompt (clarify-first rules)\n"
+        "                              └─ OpenAI function calling (7 tools)\n"
+        "                                    └─ Bookly APIs (orders, catalog, policies)"
     )
-    add_textbox(slide, Inches(0.8), Inches(2.1), Inches(11.5), Inches(2.2), arch,
-                size=15, color=MUTED)
-    tf = add_textbox(slide, Inches(0.8), Inches(4.5), Inches(11), Inches(2.5), "", size=16)
+    add_textbox(slide, Inches(0.8), Inches(2.1), Inches(11.5), Inches(2.4), arch, size=15, color=MUTED)
+    tf = add_textbox(slide, Inches(0.8), Inches(4.7), Inches(11), Inches(2.3), "", size=16)
     add_bullets(tf, [
-        "Orchestrator — runs LLM ↔ tool loop (up to 5 turns per message)",
-        "Tools — lookup_order · initiate_refund · check_stock · get_policy · send_password_reset",
-        "Memory — per-session history + extracted slots",
-        "Prompts — clarify-first rules and tone guardrails",
-    ], size=17)
-    add_notes(slide,
-              "I avoided all-in-one agent platforms on purpose — ~300 lines of orchestration I can explain line by line.")
+        "Orchestrator — LLM ↔ tool loop; rules-based fallback when no API key",
+        "Tools — lookup_order · verify_identity · initiate_refund · check_stock · get_policy · send_password_reset · escalate_to_human",
+        "Memory — per-session slots (order_id, reason, email, book_title)",
+        "Eval harness — 30 golden cases, 100% pass rate, CI-ready",
+    ], size=16)
+    add_notes(slide, "~350 lines of orchestration I can explain line by line. No LangChain.")
 
-    # ── Slide 3: Decision 1 ─────────────────────────────────────────
+    # Slide 3 — Tools over RAG
     slide = prs.slides.add_slide(blank)
     set_slide_bg(slide, BG_DARK)
     add_textbox(slide, Inches(0.8), Inches(0.5), Inches(11), Inches(0.5),
                 "KEY DECISION #1", size=14, color=ACCENT, bold=True)
     add_textbox(slide, Inches(0.8), Inches(1.0), Inches(11.5), Inches(0.9),
-                "Tools over RAG for transactions",
-                size=32, bold=True)
+                "Tools over RAG for transactions", size=32, bold=True)
     add_textbox(slide, Inches(0.8), Inches(2.0), Inches(11), Inches(0.6),
-                "Order status, refunds, and inventory use function calling to Bookly APIs — not vector search.",
+                "Order status, refunds, and inventory use function calling — not vector search.",
                 size=18, color=MUTED)
     tf = add_textbox(slide, Inches(0.8), Inches(2.8), Inches(5.2), Inches(3.5), "Pros", size=18, bold=True, color=GREEN)
     add_bullets(tf, [
-        "Zero hallucination risk on order IDs, tracking, refund amounts",
-        "Actions (initiate_refund) are first-class — not instructions to the user",
-    ], size=16, color=TEXT)
+        "Zero hallucination risk on order IDs, tracking, stock levels",
+        "Actions (initiate_refund) are first-class operations",
+        "RAG stays available for long-tail FAQ and policy docs",
+    ], size=16)
     tf = add_textbox(slide, Inches(6.5), Inches(2.8), Inches(5.5), Inches(3.5), "Trade-off", size=18, bold=True, color=RED)
     add_bullets(tf, [
-        "Each new action requires a new tool + integration",
-        "More eng work than dumping everything into a knowledge base",
-    ], size=16, color=TEXT)
+        "Each new action needs a tool + integration",
+        "More eng work than a single knowledge base",
+    ], size=16)
     add_textbox(slide, Inches(0.8), Inches(6.0), Inches(11.5), Inches(0.8),
-                "Why worth it: Wrong order data is a P0 incident. RAG is great for policies; transactions need systems of record.",
+                "Wrong order data is a P0 incident. Transactions need systems of record.",
                 size=16, color=ACCENT, bold=True)
 
-    # ── Slide 4: Decision 2 ─────────────────────────────────────────
+    # Slide 4 — Clarify-first + slot memory
     slide = prs.slides.add_slide(blank)
     set_slide_bg(slide, BG_DARK)
     add_textbox(slide, Inches(0.8), Inches(0.5), Inches(11), Inches(0.5),
                 "KEY DECISION #2", size=14, color=ACCENT, bold=True)
     add_textbox(slide, Inches(0.8), Inches(1.0), Inches(11.5), Inches(0.9),
-                "Clarify-first + slot memory",
-                size=32, bold=True)
+                "Clarify-first + slot memory", size=32, bold=True)
     add_textbox(slide, Inches(0.8), Inches(2.0), Inches(11), Inches(0.6),
                 "LLM handles natural language; ConversationMemory tracks required fields across turns.",
                 size=18, color=MUTED)
     tf = add_textbox(slide, Inches(0.8), Inches(2.8), Inches(5.2), Inches(3.5), "Pros", size=18, bold=True, color=GREEN)
     add_bullets(tf, [
-        "Refund flow collects order_id → reason → email before acting",
+        "Refund: order_id → reason → email → verify → initiate_refund",
         "Regex slot extraction catches structured inputs the LLM might miss",
+        "Mid-flow slot collection protected from intent overwrite",
     ], size=16)
     tf = add_textbox(slide, Inches(6.5), Inches(2.8), Inches(5.5), Inches(3.5), "Trade-off", size=18, bold=True, color=RED)
     add_bullets(tf, [
         "Not a full finite-state machine",
-        "Edge cases need tighter validation in production",
+        "Production adds auth session pre-fill and tighter validation",
     ], size=16)
     add_textbox(slide, Inches(0.8), Inches(5.8), Inches(11.5), Inches(1.0),
-                'Example: "I want a refund" → order ID → reason → email → initiate_refund',
+                'Example: "Where\'s my order?" → order ID → lookup_order → UPS tracking',
                 size=17, color=ACCENT, bold=True)
 
-    # ── Slide 5: Production ─────────────────────────────────────────
+    # Slide 5 — Safety & escalation
     slide = prs.slides.add_slide(blank)
     set_slide_bg(slide, BG_DARK)
     add_textbox(slide, Inches(0.8), Inches(0.5), Inches(11), Inches(0.5),
-                "WHAT I'D DO DIFFERENTLY", size=14, color=ACCENT, bold=True)
+                "KEY DECISION #3", size=14, color=ACCENT, bold=True)
     add_textbox(slide, Inches(0.8), Inches(1.0), Inches(11.5), Inches(0.9),
-                "Eval harness + human handoff — first",
-                size=32, bold=True)
+                "Verify before act · Escalate with context", size=32, bold=True)
+    tf = add_textbox(slide, Inches(0.8), Inches(2.2), Inches(5.5), Inches(4.5), "", size=16)
+    add_bullets(tf, [
+        "verify_customer_identity before every refund",
+        "Verification ≠ approval — eligibility checked separately",
+        "Wrong email stops flow before refund record created",
+        "escalate_to_human packages transcript + ticket ID",
+        "Human agent never makes customer repeat themselves",
+    ], size=17)
+    add_textbox(slide, Inches(6.5), Inches(2.5), Inches(5.8), Inches(3.5),
+                "Refund flow\n\n1. Collect slots\n2. Verify identity\n3. Check eligibility\n4. Initiate return\n\nEscalation\n\n→ Summary + ESC-XXXXXX ticket",
+                size=15, color=MUTED)
+    add_notes(slide, "Production: OTP, logged-in session, confidence-based auto-escalation.")
+
+    # Slide 6 — Live demo flows
+    slide = prs.slides.add_slide(blank)
+    set_slide_bg(slide, BG_DARK)
+    add_textbox(slide, Inches(0.8), Inches(0.5), Inches(11), Inches(0.5),
+                "LIVE DEMO", size=14, color=ACCENT, bold=True)
+    add_textbox(slide, Inches(0.8), Inches(1.0), Inches(11.5), Inches(0.9),
+                "Seven flows that prove the thesis", size=32, bold=True)
     rows = [
-        ("Gap today", "Production fix"),
-        ("No automated tool-selection tests", "Golden-set evals: 50+ utterances → expected intent"),
+        ("1. Order lookup", '"Where\'s my order?" → ORD-1001 → UPS tracking'),
+        ("2. Delayed shipment", "ORD-1006 → weather delay + new ETA"),
+        ("3. Inventory", "Fourth Wing (OOS) · Atomic Habits (in stock)"),
+        ("4. Policy FAQ", "Return policy → 30-day window via get_policy"),
+        ("5. Refund + verify", "ORD-1003 · damaged · carol@example.com → RFD issued"),
+        ("6. Edge case", "ORD-1004 → identity OK, return window expired"),
+        ("7. Human handoff", "Escalation → ticket + conversation summary"),
+    ]
+    top = Inches(2.1)
+    for i, (label, detail) in enumerate(rows):
+        y = top + Inches(i * 0.72)
+        add_textbox(slide, Inches(0.8), y, Inches(2.8), Inches(0.65), label, size=15, bold=True, color=ACCENT)
+        add_textbox(slide, Inches(3.6), y, Inches(8.8), Inches(0.65), detail, size=14, color=TEXT)
+    add_notes(slide, "Run evals/run_evals.py as backup — 30/30 pass.")
+
+    # Slide 7 — Eval harness
+    slide = prs.slides.add_slide(blank)
+    set_slide_bg(slide, BG_DARK)
+    add_textbox(slide, Inches(0.8), Inches(0.5), Inches(11), Inches(0.5),
+                "QUALITY", size=14, color=ACCENT, bold=True)
+    add_textbox(slide, Inches(0.8), Inches(1.0), Inches(11.5), Inches(0.9),
+                "Golden-set eval harness — 30 cases, 100% pass", size=32, bold=True)
+    tf = add_textbox(slide, Inches(0.8), Inches(2.2), Inches(5.5), Inches(4), "", size=16)
+    add_bullets(tf, [
+        "Tests tool selection, not just phrasing",
+        "Covers clarify-first, multi-turn refunds, identity checks",
+        "Runs against rules engine in <1 second",
+        "CI-ready regression safety when prompts change",
+        "Next: LLM-as-judge for tone + shadow-mode staging",
+    ], size=17)
+    add_textbox(slide, Inches(6.5), Inches(2.5), Inches(5.8), Inches(3),
+                "$ python evals/run_evals.py\n\n"
+                "30 passed, 0 failed\n"
+                "Pass rate: 100%",
+                size=18, color=GREEN, align=PP_ALIGN.CENTER)
+    add_notes(slide, "Enterprise buyers audit tool-selection accuracy, not vibes.")
+
+    # Slide 8 — Roadmap & close
+    slide = prs.slides.add_slide(blank)
+    set_slide_bg(slide, BG_DARK)
+    add_textbox(slide, Inches(0.8), Inches(0.5), Inches(11), Inches(0.5),
+                "ROADMAP", size=14, color=ACCENT, bold=True)
+    add_textbox(slide, Inches(0.8), Inches(1.0), Inches(11.5), Inches(0.9),
+                "What's next for production", size=32, bold=True)
+    rows = [
+        ("Today", "Production"),
         ("JSON data stores", "OMS + inventory + CRM integrations"),
-        ("No escalation path", "Confidence threshold → summarize → route to human"),
-        ("In-process session memory", "Redis + customer auth for cross-device continuity"),
+        ("Email-match identity", "Auth session + OTP"),
+        ("Keyword escalation", "Confidence threshold + sentiment"),
+        ("In-process sessions", "Redis + cross-device continuity"),
+        ("Rules + LLM dual engine", "LLM-primary + param guardrails"),
     ]
     top = Inches(2.2)
     for i, (left, right) in enumerate(rows):
         y = top + Inches(i * 0.72)
-        color = ACCENT if i == 0 else TEXT
         bold = i == 0
+        color = MUTED if i == 0 else TEXT
         sz = 15 if i == 0 else 14
-        c = MUTED if i == 0 else TEXT
-        add_textbox(slide, Inches(0.8), y, Inches(5.2), Inches(0.65), left, size=sz, bold=bold, color=c)
-        add_textbox(slide, Inches(6.2), y, Inches(6.2), Inches(0.65), right, size=sz, bold=bold, color=c)
+        add_textbox(slide, Inches(0.8), y, Inches(5.2), Inches(0.65), left, size=sz, bold=bold, color=color)
+        add_textbox(slide, Inches(6.2), y, Inches(6.2), Inches(0.65), right, size=sz, bold=bold, color=color)
     add_textbox(slide, Inches(0.8), Inches(6.0), Inches(11.5), Inches(0.9),
-                "Depth beats breadth — two flows done well beats ten done shallow.",
+                "Depth beats breadth — nail core flows before scaling intents.",
                 size=18, color=ACCENT, bold=True)
-    add_notes(slide,
-              "Before scaling intents, you need to know if the agent chooses the right action — that's what enterprise buyers audit.")
+    add_notes(slide, "Happy to go deeper on any decision. Questions?")
 
     return prs
 
