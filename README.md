@@ -48,11 +48,24 @@ cp .env.example .env
 # Option A: Jupyter notebook (great for live screen share)
 jupyter notebook notebooks/bookly_demo.ipynb
 
-# Option B: Web chat UI
+# Option B: Web chat UI (FastAPI)
 uvicorn app.main:app --reload --port 8000
+
+# Option C: Streamlit UI (quick polished demo)
+streamlit run app/streamlit_app.py
 ```
 
-Open [http://localhost:8000](http://localhost:8000) for the web UI.
+Open [http://localhost:8000](http://localhost:8000) for the FastAPI web UI, or [http://localhost:8501](http://localhost:8501) for Streamlit.
+
+### Deploy publicly (free)
+
+Host the Streamlit app on the internet via **Streamlit Community Cloud** — see [DEPLOY.md](./DEPLOY.md).
+
+Quick version:
+1. Push repo to GitHub
+2. Go to https://share.streamlit.io → **New app**
+3. Repo: `andrewwchild/booklydemo` · Main file: `app/streamlit_app.py`
+4. Deploy → share the public URL
 
 Works **without an API key** in deterministic mock mode — reliable for live presentations if the network fails.
 
