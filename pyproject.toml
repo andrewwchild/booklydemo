@@ -17,4 +17,7 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["agent*", "tools*", "app*"]
+include = ["agent*", "tools*", "app*", "data*"]
+
+[tool.setuptools.package-data]
+data = ["*.json"]

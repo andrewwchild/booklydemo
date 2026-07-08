@@ -1,6 +1,5 @@
 """Streamlit chat UI for Bookly customer support."""
 
-import json
 import os
 import sys
 from pathlib import Path
@@ -44,10 +43,11 @@ GREETING = (
 )
 
 
+from data.loader import load_catalog, load_orders
+
+
 def _load_orders() -> list[dict[str, Any]]:
-    path = ROOT / "data" / "orders.json"
-    with open(path) as f:
-        orders = json.load(f)
+    orders = load_orders()
     return [
         {"order_id": oid, "email": o["customer_email"], "status": o["status"]}
         for oid, o in sorted(orders.items())
@@ -55,9 +55,7 @@ def _load_orders() -> list[dict[str, Any]]:
 
 
 def _load_catalog_summary() -> dict[str, Any]:
-    path = ROOT / "data" / "catalog.json"
-    with open(path) as f:
-        books = json.load(f)["books"]
+    books = load_catalog()["books"]
     out = [b["title"] for b in books if not b["in_stock"]]
     return {
         "total_titles": len(books),

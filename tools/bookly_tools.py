@@ -1,23 +1,19 @@
 import json
-from pathlib import Path
 from typing import Any
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+from data.loader import load_catalog, load_orders, load_policies
 
 
 def _load_orders() -> dict[str, Any]:
-    with open(DATA_DIR / "orders.json") as f:
-        return json.load(f)
+    return load_orders()
 
 
 def _load_policies() -> dict[str, Any]:
-    with open(DATA_DIR / "policies.json") as f:
-        return json.load(f)
+    return load_policies()
 
 
 def _load_catalog() -> dict[str, Any]:
-    with open(DATA_DIR / "catalog.json") as f:
-        return json.load(f)
+    return load_catalog()
 
 
 def _format_stock_message(book: dict[str, Any]) -> str:
