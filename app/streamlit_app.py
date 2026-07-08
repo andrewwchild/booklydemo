@@ -2,6 +2,7 @@
 
 import os
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -66,12 +67,20 @@ def reset_chat() -> None:
     st.session_state.messages = [{"role": "assistant", "content": GREETING}]
 
 
+MIN_RESPONSE_SECONDS = 2.0
+
+
 def handle_message(text: str) -> None:
     cleaned = text.strip()
     if not cleaned:
         return
     st.session_state.messages.append({"role": "user", "content": cleaned})
-    result = st.session_state.agent.chat(st.session_state.memory, cleaned)
+    started = time.monotonic()
+    with st.spinner("Bookly Support is typing…"):
+        result = st.session_state.agent.chat(st.session_state.memory, cleaned)
+        elapsed = time.monotonic() - started
+        if elapsed < MIN_RESPONSE_SECONDS:
+            time.sleep(MIN_RESPONSE_SECONDS - elapsed)
     st.session_state.messages.append(
         {"role": "assistant", "content": result["reply"]}
     )

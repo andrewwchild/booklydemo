@@ -1,3 +1,5 @@
+import asyncio
+import time
 import uuid
 from pathlib import Path
 
@@ -16,6 +18,8 @@ app = FastAPI(title="Bookly Customer Support Agent", version="1.0.0")
 agent = BooklyAgent()
 
 sessions: dict[str, ConversationMemory] = {}
+
+MIN_RESPONSE_SECONDS = 2.0
 
 STATIC_DIR = Path(__file__).parent / "static"
 
@@ -59,10 +63,15 @@ async def chat(req: ChatRequest):
         sessions[session_id] = ConversationMemory()
 
     memory = sessions[session_id]
+    started = time.monotonic()
     try:
         result = agent.chat(memory, req.message.strip())
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) from e
+
+    elapsed = time.monotonic() - started
+    if elapsed < MIN_RESPONSE_SECONDS:
+        await asyncio.sleep(MIN_RESPONSE_SECONDS - elapsed)
 
     return ChatResponse(
         reply=result["reply"],
