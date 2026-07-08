@@ -116,13 +116,13 @@ with st.container(border=True):
     _render_suggestion_chips()
 
     with st.form("bookly_composer", clear_on_submit=True, border=False):
-        user_input = st.text_area(
-            "message",
-            placeholder="Type a question about orders, books, returns, or policies…",
-            label_visibility="collapsed",
-            height=72,
-        )
-        send_col, _ = st.columns([1, 4])
+        input_col, send_col = st.columns([5, 1])
+        with input_col:
+            user_input = st.text_input(
+                "message",
+                placeholder="Type a question… press Enter to send",
+                label_visibility="collapsed",
+            )
         with send_col:
             submitted = st.form_submit_button("Send", use_container_width=True)
 

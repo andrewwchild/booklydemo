@@ -1,7 +1,27 @@
 """Decagon-inspired visual theme for Bookly support surfaces."""
 
 DECAGON_CSS = """
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@font-face {
+  font-family: Circular;
+  src: url("https://cdn.prod.website-files.com/683e5da0b6d8a19de4875ae7/6a04985de05b82f9d9de1893_CircularXXSub-Book.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Circular;
+  src: url("https://cdn.prod.website-files.com/683e5da0b6d8a19de4875ae7/6a04985eb7510dfdda152e64_CircularXXSub-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Circular;
+  src: url("https://cdn.prod.website-files.com/683e5da0b6d8a19de4875ae7/6a04985d569d553286179732_CircularXXSub-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --ink: #0A0A0B;
@@ -17,12 +37,22 @@ DECAGON_CSS = """
   --bg: #FFFFFF;
   --bg-soft: #F4F4F2;
   --dark: #0E0E10;
+  --font: Circular, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+}
+
+html, body, [data-testid="stAppViewContainer"],
+[data-testid="stAppViewContainer"] *:not([data-testid="stIconMaterial"]):not(.material-icons) {
+  font-family: var(--font) !important;
 }
 
 html, body, [data-testid="stAppViewContainer"] {
   background: var(--bg) !important;
   color: var(--ink) !important;
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+.bookly-shell, .bookly-shell h1, .bookly-shell p, .bookly-shell b {
+  font-family: var(--font) !important;
 }
 
 [data-testid="stHeader"], [data-testid="stToolbar"], footer {
@@ -172,29 +202,34 @@ div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] {
   border-top: 1px solid var(--line-soft) !important;
 }
 
-div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="stTextArea"] textarea {
-  min-height: 72px !important;
+div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="stTextInput"] input {
+  min-height: 44px !important;
   border: 2px solid var(--peri-border) !important;
   border-radius: 14px !important;
   background: #FFFFFF !important;
   color: var(--ink) !important;
   font-size: 0.95rem !important;
   line-height: 1.45 !important;
-  padding: 0.85rem 1rem !important;
+  padding: 0.75rem 1rem !important;
 }
 
-div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="stTextArea"] textarea:focus {
+div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="stTextInput"] input:focus {
   border-color: var(--peri) !important;
   box-shadow: 0 0 0 4px rgba(87, 84, 255, 0.14) !important;
 }
 
 div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] .stButton > button {
-  min-height: 40px !important;
+  min-height: 44px !important;
   font-size: 0.88rem !important;
   padding: 0.55rem 1.2rem !important;
   background: var(--ink) !important;
   color: #FFFFFF !important;
   border-color: var(--ink) !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="column"]:last-child {
+  display: flex !important;
+  align-items: flex-end !important;
 }
 
 /* Legacy standalone composer (unused) */
