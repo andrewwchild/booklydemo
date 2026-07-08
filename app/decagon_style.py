@@ -32,7 +32,100 @@ html, body, [data-testid="stAppViewContainer"] {
 .block-container {
   max-width: 920px !important;
   padding-top: 0 !important;
-  padding-bottom: 2rem !important;
+  padding-bottom: 3rem !important;
+}
+
+/* Compact hero so chat controls appear sooner */
+.bookly-hero {
+  padding: 22px 28px 24px;
+}
+
+.bookly-hero h1 {
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  margin-top: 12px;
+}
+
+.bookly-hero p {
+  font-size: 0.95rem;
+  margin-top: 10px;
+}
+
+.bookly-hero::after {
+  width: 90px;
+  height: 90px;
+  top: 12%;
+}
+
+.bookly-stat {
+  padding: 18px 16px;
+}
+
+.bookly-stat .n {
+  font-size: 1.45rem;
+}
+
+.bookly-composer-label {
+  margin: 20px 0 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+form[data-testid="stForm"] {
+  margin: 0 0 8px !important;
+  padding: 18px 18px 14px !important;
+  border-radius: 22px !important;
+  border: 2px solid var(--peri-border) !important;
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--peri-tint) 100%) !important;
+  box-shadow: 0 10px 30px rgba(87, 84, 255, 0.12) !important;
+}
+
+form[data-testid="stForm"] [data-testid="stTextArea"] textarea {
+  min-height: 88px !important;
+  border: 2px solid var(--peri-border) !important;
+  border-radius: 16px !important;
+  background: #FFFFFF !important;
+  color: var(--ink) !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  padding: 1rem 1.1rem !important;
+  box-shadow: inset 0 1px 2px rgba(10, 10, 11, 0.04) !important;
+}
+
+form[data-testid="stForm"] [data-testid="stTextArea"] textarea:focus {
+  border-color: var(--peri) !important;
+  box-shadow: 0 0 0 4px rgba(87, 84, 255, 0.16) !important;
+}
+
+form[data-testid="stForm"] .stButton > button {
+  min-height: 48px !important;
+  font-size: 0.95rem !important;
+  padding: 0.7rem 1.4rem !important;
+  background: var(--ink) !important;
+  color: #FFFFFF !important;
+  border-color: var(--ink) !important;
+}
+
+.bookly-composer-hint {
+  margin: 0 0 16px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.bookly-chat-panel {
+  margin-top: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--bg-soft);
+  max-height: 42vh;
+  overflow-y: auto;
+}
+
+/* Hide Streamlit's fixed bottom chat input if any legacy widget remains */
+[data-testid="stBottomBlock"],
+[data-testid="stChatInput"] {
+  display: none !important;
 }
 
 .bookly-shell { margin: 0 -1rem; }
@@ -241,6 +334,11 @@ div[data-testid="stChatInput"] textarea {
 div[data-testid="stChatInput"] textarea:focus {
   border-color: var(--peri) !important;
   box-shadow: 0 0 0 3px rgba(87, 84, 255, 0.12) !important;
+}
+/* Hide Streamlit's fixed bottom chat input */
+[data-testid="stBottomBlock"],
+[data-testid="stChatInput"] {
+  display: none !important;
 }
 
 .stButton > button {

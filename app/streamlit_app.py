@@ -3,7 +3,6 @@
 import os
 import sys
 from pathlib import Path
-from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
@@ -67,8 +66,11 @@ def reset_chat() -> None:
 
 
 def handle_message(text: str) -> None:
-    st.session_state.messages.append({"role": "user", "content": text})
-    result = st.session_state.agent.chat(st.session_state.memory, text)
+    cleaned = text.strip()
+    if not cleaned:
+        return
+    st.session_state.messages.append({"role": "user", "content": cleaned})
+    result = st.session_state.agent.chat(st.session_state.memory, cleaned)
     st.session_state.messages.append(
         {"role": "assistant", "content": result["reply"]}
     )
@@ -90,6 +92,28 @@ with reset_col:
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
+st.markdown('<div class="bookly-composer-label">Ask Bookly anything</div>', unsafe_allow_html=True)
+
+with st.form("bookly_composer", clear_on_submit=True, border=False):
+    user_input = st.text_area(
+        "message",
+        placeholder="Ask about orders, books, returns, or policies…",
+        label_visibility="collapsed",
+        height=88,
+    )
+    send_col, _ = st.columns([1.2, 4])
+    with send_col:
+        submitted = st.form_submit_button("Send message", use_container_width=True)
+
+st.markdown(
+    '<p class="bookly-composer-hint">Press Send or try a common question below.</p>',
+    unsafe_allow_html=True,
+)
+
+if submitted and user_input:
+    handle_message(user_input)
+    st.rerun()
+
 st.markdown('<div class="section-label">Conversation</div>', unsafe_allow_html=True)
 
 for msg in st.session_state.messages:
@@ -102,7 +126,3 @@ for col, prompt in zip(cols, QUICK_PROMPTS):
     if col.button(prompt, use_container_width=True):
         handle_message(prompt)
         st.rerun()
-
-if user_input := st.chat_input("Ask about orders, books, returns, or policies…"):
-    handle_message(user_input)
-    st.rerun()
