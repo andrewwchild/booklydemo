@@ -18,7 +18,7 @@ async function init() {
 
   appendMessage(
     "assistant",
-    "Hi! I'm Bookly Support. I can help with order status, returns, book availability, topic recommendations, shipping policies, or password resets. How can I help you today?"
+    "Hello! I'm Bookly Support. I can assist with orders, returns, availability, book picks, shipping policies, or password resets. What can I help you with today?"
   );
 }
 

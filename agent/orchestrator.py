@@ -441,9 +441,9 @@ class BooklyAgent:
             reply = " ".join(policy.values()) if isinstance(policy, dict) else str(policy)
         elif intent == "greeting":
             reply = (
-                "Hi! I'm Bookly Support. I can help with order status, returns, "
-                "book availability, topic recommendations, shipping policies, or password resets. "
-                "What can I help with today?"
+                "Hello! I'm Bookly Support. I can assist with orders, returns, "
+                "availability, book picks, shipping policies, or password resets. "
+                "What can I help you with today?"
             )
         elif memory.awaiting_slot == "customer_email" and "customer_email" in memory.slots:
             args = {"email": memory.slots["customer_email"]}

@@ -385,23 +385,23 @@ def render_shell_header(*, catalog_count: int, tool_count: int = 8, eval_count: 
     return f"""
 <div class="bookly-shell">
   <div class="bookly-announce">
-    <b>Bookly Support</b> · AI concierge for orders, returns, and recommendations ·
-    <span class="accent">Powered by grounded tools</span>
+    <b>Bookly Support</b> · Your AI concierge for orders, returns, and book picks ·
+    <span class="accent">Backed by real-time tools</span>
   </div>
   <div class="bookly-nav">
     <div class="bookly-brand">
       <span class="mark">B</span>
       <span>Bookly</span>
-      <span class="sub">Customer Support</span>
+      <span class="sub">Support Team</span>
     </div>
   </div>
   <div class="bookly-hero-wrap">
     <div class="bookly-hero">
       <div class="bookly-hero-inner">
-        <div class="bookly-pill">✦ Bookly Support · AI Concierge</div>
-        <h1>The AI concierge for every book lover.</h1>
-        <p>Order tracking, returns, topic recommendations, and account help —
-        clarify-first, grounded in real Bookly data.</p>
+        <div class="bookly-pill">✦ Bookly Support · AI Assistant</div>
+        <h1>Your AI concierge for every reader.</h1>
+        <p>Track orders, start returns, get book picks, and account help —
+        we clarify first, using live Bookly data.</p>
       </div>
     </div>
   </div>
@@ -409,19 +409,19 @@ def render_shell_header(*, catalog_count: int, tool_count: int = 8, eval_count: 
     <div class="bookly-stats-grid">
       <div class="bookly-stat">
         <div class="n">{catalog_count}</div>
-        <div class="l"><b>Titles</b> in our catalog</div>
+        <div class="l"><b>Titles</b> in catalog</div>
       </div>
       <div class="bookly-stat">
         <div class="n">{tool_count}</div>
-        <div class="l"><b>Tools</b> for grounded answers</div>
+        <div class="l"><b>Tools</b> for reliable answers</div>
       </div>
       <div class="bookly-stat">
         <div class="n">{eval_count}</div>
-        <div class="l"><b>Golden tests</b> in eval harness</div>
+        <div class="l"><b>Regression tests</b> in eval suite</div>
       </div>
       <div class="bookly-stat">
         <div class="n">24/7</div>
-        <div class="l"><b>Support</b> always available</div>
+        <div class="l"><b>Help</b> always on</div>
       </div>
     </div>
   </div>
