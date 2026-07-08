@@ -35,6 +35,10 @@
   --bg-soft: #F4F4F2;
   --dark: #0E0E10;
   --maxw: 920px;
+  --control-h: 40px;
+  --control-font: 0.82rem;
+  --control-radius: 12px;
+  --widget-pad-x: 16px;
 }
 
 * {
@@ -236,7 +240,11 @@ body {
 }
 
 .chat-widget-header {
-  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem var(--widget-pad-x);
   border-bottom: 1px solid var(--line-soft);
 }
 
@@ -244,6 +252,7 @@ body {
   font-size: 1rem;
   font-weight: 600;
   color: var(--ink);
+  line-height: var(--control-h);
 }
 
 .chat-widget #chat {
@@ -260,7 +269,7 @@ body {
 
 .composer {
   background: var(--bg-soft);
-  padding: 10px 14px 14px;
+  padding: 10px var(--widget-pad-x) 14px;
 }
 
 .composer-label {
@@ -273,22 +282,28 @@ body {
 }
 
 .composer .suggestions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
   padding: 0 0 10px;
   margin: 0;
 }
 
 .composer .suggestions button {
-  font-size: 0.72rem;
-  padding: 0.28rem 0.6rem;
+  height: var(--control-h);
+  min-height: var(--control-h);
+  width: 100%;
+  font-size: var(--control-font);
+  padding: 0 0.65rem;
   border-radius: 999px;
   border: 1px solid var(--peri-border);
   background: var(--bg);
   color: var(--peri-deep);
   font-weight: 500;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .composer .suggestions button:hover {
@@ -297,15 +312,21 @@ body {
 }
 
 .composer .input-row {
+  display: flex;
+  align-items: center;
   border-top: none;
   padding: 0;
   gap: 0.5rem;
 }
 
 .composer .input-row input {
-  border-radius: 14px;
+  flex: 1;
+  height: var(--control-h);
+  min-height: var(--control-h);
+  border-radius: var(--control-radius);
   border: 2px solid var(--peri-border);
-  padding: 0.85rem 1rem;
+  padding: 0 0.9rem;
+  font-size: var(--control-font);
 }
 
 .composer .input-row input:focus {
@@ -314,8 +335,13 @@ body {
 }
 
 .composer .input-row button {
-  min-height: 40px;
-  border-radius: 14px;
+  height: var(--control-h);
+  min-height: var(--control-h);
+  min-width: 5.5rem;
+  border-radius: var(--control-radius);
+  padding: 0 1rem;
+  font-size: var(--control-font);
+  font-weight: 600;
 }
 
 .chat-shell {
@@ -360,15 +386,18 @@ body {
 }
 
 .suggestions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.5rem;
   margin-bottom: 0.75rem;
 }
 
 .suggestions button {
-  font-size: 0.82rem;
-  padding: 0.45rem 0.9rem;
+  height: var(--control-h);
+  min-height: var(--control-h);
+  width: 100%;
+  font-size: var(--control-font);
+  padding: 0 0.65rem;
   border-radius: 999px;
   border: 1px solid var(--peri-border);
   background: var(--bg);
@@ -376,6 +405,9 @@ body {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.18s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .suggestions button:hover {
@@ -385,6 +417,7 @@ body {
 
 .input-row {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
   padding-top: 0.75rem;
   border-top: 1px solid var(--line-soft);
@@ -392,12 +425,14 @@ body {
 
 .input-row input {
   flex: 1;
-  padding: 0.8rem 1.1rem;
-  border-radius: 999px;
-  border: 1px solid var(--line);
+  height: var(--control-h);
+  min-height: var(--control-h);
+  padding: 0 0.9rem;
+  border-radius: var(--control-radius);
+  border: 2px solid var(--peri-border);
   background: var(--bg);
   color: var(--ink);
-  font-size: 0.95rem;
+  font-size: var(--control-font);
 }
 
 .input-row input:focus {
@@ -407,11 +442,15 @@ body {
 }
 
 .input-row button {
-  padding: 0.8rem 1.25rem;
-  border-radius: 999px;
+  height: var(--control-h);
+  min-height: var(--control-h);
+  min-width: 5.5rem;
+  padding: 0 1rem;
+  border-radius: var(--control-radius);
   border: none;
   background: var(--ink);
   color: white;
+  font-size: var(--control-font);
   font-weight: 600;
   cursor: pointer;
 }
@@ -439,4 +478,8 @@ body {
   .stats-card .cell:nth-last-child(-n+2) { border-bottom: none; }
   .hero-card { border-radius: 14px; padding: 12px 14px 14px; }
   .hero-card::after { width: 48px; height: 48px; right: 5%; top: 10%; }
+  .composer .suggestions,
+  .suggestions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

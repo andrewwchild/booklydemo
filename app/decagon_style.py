@@ -38,6 +38,10 @@ DECAGON_CSS = """
   --bg-soft: #F4F4F2;
   --dark: #0E0E10;
   --font: Circular, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --control-h: 40px;
+  --control-font: 0.82rem;
+  --control-radius: 12px;
+  --widget-pad-x: 16px;
 }
 
 html, body, [data-testid="stAppViewContainer"],
@@ -127,14 +131,6 @@ html, body, [data-testid="stAppViewContainer"] {
   line-height: 1.4;
 }
 
-.bookly-stat {
-  padding: 18px 16px;
-}
-
-.bookly-stat .n {
-  font-size: 1.45rem;
-}
-
 .bookly-composer-label {
   margin: 20px 0 10px;
   font-size: 0.95rem;
@@ -153,7 +149,33 @@ div[data-testid="stVerticalBlockBorderWrapper"] {
 }
 
 div[data-testid="stVerticalBlockBorderWrapper"] > div {
-  padding-top: 0.35rem !important;
+  padding-top: 0 !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] > div > div[data-testid="stHorizontalBlock"]:first-of-type {
+  align-items: center !important;
+  padding: 0.7rem var(--widget-pad-x) !important;
+  margin: 0 !important;
+  border-bottom: 1px solid var(--line-soft) !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] > div > div[data-testid="stHorizontalBlock"]:first-of-type [data-testid="stMarkdownContainer"] p {
+  margin: 0 !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  line-height: var(--control-h) !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] > div > div[data-testid="stHorizontalBlock"]:first-of-type .stButton {
+  width: 100% !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] > div > div[data-testid="stHorizontalBlock"]:first-of-type .stButton > button {
+  height: var(--control-h) !important;
+  min-height: var(--control-h) !important;
+  width: 100% !important;
+  font-size: var(--control-font) !important;
+  padding: 0 0.85rem !important;
 }
 
 div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stChatMessage"] {
@@ -168,7 +190,7 @@ div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"] 
 
 .bookly-widget-footer-start {
   background: var(--bg-soft);
-  padding: 10px 16px 0;
+  padding: 10px var(--widget-pad-x) 0;
 }
 
 .bookly-chip-label {
@@ -181,20 +203,35 @@ div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"] 
 
 .bookly-widget-footer-start ~ div[data-testid="stHorizontalBlock"] {
   background: var(--bg-soft) !important;
-  padding: 0 12px 6px !important;
+  padding: 0 var(--widget-pad-x) 8px !important;
   margin-top: 0 !important;
+  gap: 0.5rem !important;
+}
+
+.bookly-widget-footer-start ~ div[data-testid="stHorizontalBlock"] [data-testid="column"] {
+  display: flex !important;
+  min-width: 0 !important;
+}
+
+.bookly-widget-footer-start ~ div[data-testid="stHorizontalBlock"] .stButton {
+  width: 100% !important;
 }
 
 .bookly-widget-footer-start ~ div[data-testid="stHorizontalBlock"] .stButton > button {
-  font-size: 0.72rem !important;
-  padding: 0.28rem 0.55rem !important;
-  min-height: 28px !important;
+  height: var(--control-h) !important;
+  min-height: var(--control-h) !important;
+  width: 100% !important;
+  font-size: var(--control-font) !important;
+  padding: 0 0.65rem !important;
+  border-radius: 999px !important;
   white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
 div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] {
   margin: 0 !important;
-  padding: 8px 16px 14px !important;
+  padding: 8px var(--widget-pad-x) 14px !important;
   border: none !important;
   border-radius: 0 !important;
   box-shadow: none !important;
@@ -202,15 +239,20 @@ div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] {
   border-top: 1px solid var(--line-soft) !important;
 }
 
+div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="stTextInput"] {
+  width: 100% !important;
+}
+
 div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="stTextInput"] input {
-  min-height: 44px !important;
+  height: var(--control-h) !important;
+  min-height: var(--control-h) !important;
   border: 2px solid var(--peri-border) !important;
-  border-radius: 14px !important;
+  border-radius: var(--control-radius) !important;
   background: #FFFFFF !important;
   color: var(--ink) !important;
-  font-size: 0.95rem !important;
-  line-height: 1.45 !important;
-  padding: 0.75rem 1rem !important;
+  font-size: var(--control-font) !important;
+  line-height: 1.2 !important;
+  padding: 0 0.9rem !important;
 }
 
 div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="stTextInput"] input:focus {
@@ -218,18 +260,25 @@ div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data
   box-shadow: 0 0 0 4px rgba(87, 84, 255, 0.14) !important;
 }
 
+div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="column"] {
+  display: flex !important;
+  align-items: center !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] .stButton {
+  width: 100% !important;
+}
+
 div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] .stButton > button {
-  min-height: 44px !important;
-  font-size: 0.88rem !important;
-  padding: 0.55rem 1.2rem !important;
+  height: var(--control-h) !important;
+  min-height: var(--control-h) !important;
+  width: 100% !important;
+  font-size: var(--control-font) !important;
+  padding: 0 1rem !important;
+  border-radius: var(--control-radius) !important;
   background: var(--ink) !important;
   color: #FFFFFF !important;
   border-color: var(--ink) !important;
-}
-
-div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="column"]:last-child {
-  display: flex !important;
-  align-items: flex-end !important;
 }
 
 /* Legacy standalone composer (unused) */
@@ -411,13 +460,15 @@ div[data-testid="stChatInput"] textarea:focus {
 }
 
 .stButton > button {
-  border-radius: 999px !important;
+  border-radius: var(--control-radius) !important;
   border: 1px solid var(--peri-border) !important;
   background: var(--bg) !important;
   color: var(--peri-deep) !important;
   font-weight: 500 !important;
-  font-size: 0.82rem !important;
-  padding: 0.45rem 0.9rem !important;
+  font-size: var(--control-font) !important;
+  height: var(--control-h) !important;
+  min-height: var(--control-h) !important;
+  padding: 0 0.9rem !important;
   transition: all 0.18s ease !important;
 }
 
@@ -446,6 +497,9 @@ div[data-testid="stChatInput"] textarea:focus {
   .bookly-stat:nth-last-child(-n+2) { border-bottom: none; }
   .bookly-hero { border-radius: 14px; padding: 12px 14px 14px; }
   .bookly-hero::after { width: 48px; height: 48px; right: 5%; top: 10%; }
+  div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="column"]:first-child {
+    min-width: 0 !important;
+  }
 }
 """
 

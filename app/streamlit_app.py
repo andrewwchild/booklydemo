@@ -100,7 +100,7 @@ st.markdown(
 )
 
 with st.container(border=True):
-    title_col, reset_col = st.columns([5, 1])
+    title_col, reset_col = st.columns([6, 1.15])
     with title_col:
         st.markdown("##### Bookly Chat")
     with reset_col:
@@ -116,7 +116,7 @@ with st.container(border=True):
     _render_suggestion_chips()
 
     with st.form("bookly_composer", clear_on_submit=True, border=False):
-        input_col, send_col = st.columns([5, 1])
+        input_col, send_col = st.columns([4.25, 1])
         with input_col:
             user_input = st.text_input(
                 "message",
