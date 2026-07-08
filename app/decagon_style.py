@@ -67,6 +67,8 @@ html, body, [data-testid="stAppViewContainer"] {
   max-width: 920px !important;
   padding-top: 0 !important;
   padding-bottom: 3rem !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
 }
 
 /* Hero — compact header band */
@@ -146,6 +148,7 @@ div[data-testid="stVerticalBlockBorderWrapper"] {
   box-shadow: 0 12px 36px rgba(87, 84, 255, 0.1) !important;
   overflow: hidden !important;
   margin-top: 18px !important;
+  width: 100% !important;
 }
 
 div[data-testid="stVerticalBlockBorderWrapper"] > div {
@@ -206,11 +209,14 @@ div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"] 
   padding: 0 var(--widget-pad-x) 8px !important;
   margin-top: 0 !important;
   gap: 0.5rem !important;
+  display: flex !important;
 }
 
-.bookly-widget-footer-start ~ div[data-testid="stHorizontalBlock"] [data-testid="column"] {
-  display: flex !important;
+.bookly-widget-footer-start ~ div[data-testid="stHorizontalBlock"] > [data-testid="column"] {
+  flex: 1 1 0 !important;
+  width: 0 !important;
   min-width: 0 !important;
+  display: flex !important;
 }
 
 .bookly-widget-footer-start ~ div[data-testid="stHorizontalBlock"] .stButton {
@@ -260,9 +266,25 @@ div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data
   box-shadow: 0 0 0 4px rgba(87, 84, 255, 0.14) !important;
 }
 
+div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="stHorizontalBlock"] {
+  gap: 0.5rem !important;
+  display: flex !important;
+}
+
 div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="column"] {
   display: flex !important;
   align-items: center !important;
+  min-width: 0 !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="column"]:first-child {
+  flex: 1 1 0 !important;
+  width: 0 !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="column"]:last-child {
+  flex: 0 0 5.75rem !important;
+  width: 5.75rem !important;
 }
 
 div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] .stButton {
@@ -307,7 +329,7 @@ form[data-testid="stForm"] {
   display: none !important;
 }
 
-.bookly-shell { margin: 0 -1rem; }
+.bookly-shell { margin: 0; width: 100%; }
 
 .bookly-announce {
   text-align: center;
@@ -363,22 +385,31 @@ form[data-testid="stForm"] {
   border-radius: 28px;
   color: white;
   overflow: hidden;
+  width: 100%;
 }
 
 .bookly-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  width: 100% !important;
 }
 
 .bookly-stat {
-  padding: 28px 22px;
+  padding: 22px 12px !important;
   border-right: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 0 !important;
+  min-height: 92px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
 }
 
 .bookly-stat:last-child { border-right: none; }
 
 .bookly-stat .n {
-  font-size: 1.8rem;
+  font-size: 1.65rem;
   letter-spacing: -0.02em;
   line-height: 1.1;
   background: linear-gradient(115deg, #E3E2FF 5%, #9B99FF 55%, #7370FF 100%);
@@ -389,10 +420,11 @@ form[data-testid="stForm"] {
 }
 
 .bookly-stat .l {
-  margin-top: 8px;
-  font-size: 0.82rem;
+  margin-top: 6px;
+  font-size: 0.78rem;
   color: #A5A5AE;
-  line-height: 1.4;
+  line-height: 1.35;
+  max-width: 9rem;
 }
 
 .section-label {
@@ -540,7 +572,7 @@ def render_shell_header(*, catalog_count: int, tool_count: int = 8, eval_count: 
       </div>
       <div class="bookly-stat">
         <div class="n">{eval_count}</div>
-        <div class="l"><b>Regression tests</b> in eval suite</div>
+        <div class="l"><b>Eval tests</b> in suite</div>
       </div>
       <div class="bookly-stat">
         <div class="n">24/7</div>
