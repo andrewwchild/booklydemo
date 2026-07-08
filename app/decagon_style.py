@@ -71,6 +71,92 @@ html, body, [data-testid="stAppViewContainer"] {
   color: var(--ink);
 }
 
+/* Self-contained chat widget */
+div[data-testid="stVerticalBlockBorderWrapper"] {
+  border: 2px solid var(--peri-border) !important;
+  border-radius: 22px !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 12px 36px rgba(87, 84, 255, 0.1) !important;
+  overflow: hidden !important;
+  margin-top: 18px !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] > div {
+  padding-top: 0.35rem !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stChatMessage"] {
+  padding-left: 0.25rem !important;
+  padding-right: 0.25rem !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stVerticalBlock"] > div[style*="overflow"] {
+  border-bottom: 1px solid var(--line-soft) !important;
+  background: var(--bg-soft) !important;
+}
+
+.bookly-widget-footer-start {
+  background: var(--bg-soft);
+  padding: 10px 16px 0;
+}
+
+.bookly-chip-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.bookly-widget-footer-start ~ div[data-testid="stHorizontalBlock"] {
+  background: var(--bg-soft) !important;
+  padding: 0 12px 6px !important;
+  margin-top: 0 !important;
+}
+
+.bookly-widget-footer-start ~ div[data-testid="stHorizontalBlock"] .stButton > button {
+  font-size: 0.72rem !important;
+  padding: 0.28rem 0.55rem !important;
+  min-height: 28px !important;
+  white-space: nowrap !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] {
+  margin: 0 !important;
+  padding: 8px 16px 14px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: var(--bg-soft) !important;
+  border-top: 1px solid var(--line-soft) !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="stTextArea"] textarea {
+  min-height: 72px !important;
+  border: 2px solid var(--peri-border) !important;
+  border-radius: 14px !important;
+  background: #FFFFFF !important;
+  color: var(--ink) !important;
+  font-size: 0.95rem !important;
+  line-height: 1.45 !important;
+  padding: 0.85rem 1rem !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] [data-testid="stTextArea"] textarea:focus {
+  border-color: var(--peri) !important;
+  box-shadow: 0 0 0 4px rgba(87, 84, 255, 0.14) !important;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] form[data-testid="stForm"] .stButton > button {
+  min-height: 40px !important;
+  font-size: 0.88rem !important;
+  padding: 0.55rem 1.2rem !important;
+  background: var(--ink) !important;
+  color: #FFFFFF !important;
+  border-color: var(--ink) !important;
+}
+
+/* Legacy standalone composer (unused) */
 form[data-testid="stForm"] {
   margin: 0 0 8px !important;
   padding: 18px 18px 14px !important;
@@ -78,38 +164,6 @@ form[data-testid="stForm"] {
   border: 2px solid var(--peri-border) !important;
   background: linear-gradient(180deg, #FFFFFF 0%, var(--peri-tint) 100%) !important;
   box-shadow: 0 10px 30px rgba(87, 84, 255, 0.12) !important;
-}
-
-form[data-testid="stForm"] [data-testid="stTextArea"] textarea {
-  min-height: 88px !important;
-  border: 2px solid var(--peri-border) !important;
-  border-radius: 16px !important;
-  background: #FFFFFF !important;
-  color: var(--ink) !important;
-  font-size: 1rem !important;
-  line-height: 1.5 !important;
-  padding: 1rem 1.1rem !important;
-  box-shadow: inset 0 1px 2px rgba(10, 10, 11, 0.04) !important;
-}
-
-form[data-testid="stForm"] [data-testid="stTextArea"] textarea:focus {
-  border-color: var(--peri) !important;
-  box-shadow: 0 0 0 4px rgba(87, 84, 255, 0.16) !important;
-}
-
-form[data-testid="stForm"] .stButton > button {
-  min-height: 48px !important;
-  font-size: 0.95rem !important;
-  padding: 0.7rem 1.4rem !important;
-  background: var(--ink) !important;
-  color: #FFFFFF !important;
-  border-color: var(--ink) !important;
-}
-
-.bookly-composer-hint {
-  margin: 0 0 16px;
-  font-size: 0.8rem;
-  color: var(--muted);
 }
 
 .bookly-chat-panel {

@@ -57,30 +57,32 @@
       </div>
     </section>
 
-    <div class="chat-shell">
-      <div class="section-label">Chat history</div>
-      <main id="chat" aria-live="polite"></main>
-
-      <div class="section-label">Quick suggestions</div>
-      <div class="suggestions" id="suggestions">
-        <button type="button" data-msg="Where is my order?">Where is my order?</button>
-        <button type="button" data-msg="Books about bitcoin">Books about bitcoin</button>
-        <button type="button" data-msg="I want a refund">I want a refund</button>
-        <button type="button" data-msg="Is Fourth Wing in stock?">Is Fourth Wing in stock?</button>
-        <button type="button" data-msg="What's your return policy?">What's your return policy?</button>
-        <button type="button" data-msg="I need to speak to a real person">Speak to a person</button>
+    <div class="chat-widget">
+      <div class="chat-widget-header">
+        <h2>Bookly Chat</h2>
       </div>
-
-      <form id="form" class="input-row">
-        <input
-          id="input"
-          type="text"
-          placeholder="Type a question about orders, books, returns, or policies…"
-          autocomplete="off"
-          required
-        />
-        <button type="submit">Send</button>
-      </form>
+      <main id="chat" aria-live="polite"></main>
+      <div class="composer">
+        <div class="composer-label">Try asking</div>
+        <div class="suggestions" id="suggestions">
+          <button type="button" data-msg="Where is my order?">Order status</button>
+          <button type="button" data-msg="Books about bitcoin">Bitcoin books</button>
+          <button type="button" data-msg="I want a refund">Start return</button>
+          <button type="button" data-msg="Is Fourth Wing in stock?">Stock check</button>
+          <button type="button" data-msg="What's your return policy?">Return policy</button>
+          <button type="button" data-msg="I need to speak to a real person">Get a human</button>
+        </div>
+        <form id="form" class="input-row">
+          <input
+            id="input"
+            type="text"
+            placeholder="Type a question about orders, books, returns, or policies…"
+            autocomplete="off"
+            required
+          />
+          <button type="submit">Send</button>
+        </form>
+      </div>
     </div>
   </div>
 

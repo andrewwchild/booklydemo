@@ -31,13 +31,14 @@ try:
 except Exception:
     pass
 
-QUICK_PROMPTS = [
-    "Where is my order?",
-    "Books about bitcoin",
-    "I want a refund",
-    "Is Fourth Wing in stock?",
-    "What's your return policy?",
-    "I need to speak to a real person",
+# (short label, full message sent to agent)
+QUICK_PROMPTS: list[tuple[str, str]] = [
+    ("Order status", "Where is my order?"),
+    ("Bitcoin books", "Books about bitcoin"),
+    ("Start return", "I want a refund"),
+    ("Stock check", "Is Fourth Wing in stock?"),
+    ("Return policy", "What's your return policy?"),
+    ("Get a human", "I need to speak to a real person"),
 ]
 
 GREETING = (
@@ -76,6 +77,20 @@ def handle_message(text: str) -> None:
     )
 
 
+def _render_suggestion_chips() -> None:
+    st.markdown(
+        '<div class="bookly-widget-footer-start"><span class="bookly-chip-label">Try asking</span></div>',
+        unsafe_allow_html=True,
+    )
+    row1, row2 = QUICK_PROMPTS[:3], QUICK_PROMPTS[3:]
+    for row in (row1, row2):
+        cols = st.columns(len(row))
+        for col, (label, prompt) in zip(cols, row):
+            if col.button(label, key=f"chip_{prompt}", use_container_width=True):
+                handle_message(prompt)
+                st.rerun()
+
+
 init_session()
 
 st.markdown(f"<style>{DECAGON_CSS}</style>", unsafe_allow_html=True)
@@ -84,45 +99,33 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-_, reset_col, _ = st.columns([5, 1.4, 5])
-with reset_col:
-    st.markdown('<div class="bookly-reset">', unsafe_allow_html=True)
-    if st.button("New chat", use_container_width=True):
-        reset_chat()
-        st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
+with st.container(border=True):
+    title_col, reset_col = st.columns([5, 1])
+    with title_col:
+        st.markdown("##### Bookly Chat")
+    with reset_col:
+        if st.button("New chat", key="new_chat", use_container_width=True):
+            reset_chat()
+            st.rerun()
 
-st.markdown('<div class="bookly-composer-label">Message Bookly</div>', unsafe_allow_html=True)
+    with st.container(height=380):
+        for msg in st.session_state.messages:
+            with st.chat_message(msg["role"]):
+                st.markdown(msg["content"])
 
-with st.form("bookly_composer", clear_on_submit=True, border=False):
-    user_input = st.text_area(
-        "message",
-        placeholder="Type a question about orders, books, returns, or policies…",
-        label_visibility="collapsed",
-        height=88,
-    )
-    send_col, _ = st.columns([1.2, 4])
-    with send_col:
-        submitted = st.form_submit_button("Send", use_container_width=True)
+    _render_suggestion_chips()
 
-st.markdown(
-    '<p class="bookly-composer-hint">Hit Send, or pick a suggestion below.</p>',
-    unsafe_allow_html=True,
-)
+    with st.form("bookly_composer", clear_on_submit=True, border=False):
+        user_input = st.text_area(
+            "message",
+            placeholder="Type a question about orders, books, returns, or policies…",
+            label_visibility="collapsed",
+            height=72,
+        )
+        send_col, _ = st.columns([1, 4])
+        with send_col:
+            submitted = st.form_submit_button("Send", use_container_width=True)
 
-if submitted and user_input:
-    handle_message(user_input)
-    st.rerun()
-
-st.markdown('<div class="section-label">Chat history</div>', unsafe_allow_html=True)
-
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-
-st.markdown('<div class="section-label">Quick suggestions</div>', unsafe_allow_html=True)
-cols = st.columns(len(QUICK_PROMPTS))
-for col, prompt in zip(cols, QUICK_PROMPTS):
-    if col.button(prompt, use_container_width=True):
-        handle_message(prompt)
+    if submitted and user_input:
+        handle_message(user_input)
         st.rerun()
