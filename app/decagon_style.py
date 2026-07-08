@@ -35,25 +35,66 @@ html, body, [data-testid="stAppViewContainer"] {
   padding-bottom: 3rem !important;
 }
 
-/* Compact hero so chat controls appear sooner */
+/* Hero — compact header band */
+.bookly-hero-wrap { padding: 5px 0 0; }
+
 .bookly-hero {
-  padding: 22px 28px 24px;
-}
-
-.bookly-hero h1 {
-  font-size: clamp(1.45rem, 3vw, 2rem);
-  margin-top: 12px;
-}
-
-.bookly-hero p {
-  font-size: 0.95rem;
-  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: linear-gradient(
+    178deg,
+    #CBC7F3 0%,
+    #B9B0EE 42%,
+    #BCA9E7 64%,
+    #DDBBD8 84%,
+    #EFCDD4 100%
+  );
+  padding: 14px 18px 16px;
 }
 
 .bookly-hero::after {
-  width: 90px;
-  height: 90px;
-  top: 12%;
+  content: "";
+  position: absolute;
+  right: 7%;
+  top: 14%;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 34%, #F7F3FC, #D8CCEE 58%, #BFAEE2 100%);
+  box-shadow: 0 0 40px 14px rgba(255, 255, 255, 0.3);
+  opacity: 0.95;
+}
+
+.bookly-hero-inner { position: relative; z-index: 2; max-width: 26rem; }
+
+.bookly-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #28243D;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(6px);
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.bookly-hero h1 {
+  margin: 8px 0 0;
+  font-size: clamp(1rem, 2.2vw, 1.4rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: #161425;
+}
+
+.bookly-hero p {
+  margin: 6px 0 0;
+  font-size: 0.82rem;
+  color: #332F4A;
+  line-height: 1.4;
 }
 
 .bookly-stat {
@@ -232,67 +273,6 @@ form[data-testid="stForm"] {
   font-weight: 500;
 }
 
-.bookly-hero-wrap { padding: 10px 0 0; }
-
-.bookly-hero {
-  position: relative;
-  overflow: hidden;
-  border-radius: 28px;
-  background: linear-gradient(
-    178deg,
-    #CBC7F3 0%,
-    #B9B0EE 42%,
-    #BCA9E7 64%,
-    #DDBBD8 84%,
-    #EFCDD4 100%
-  );
-  padding: 34px 34px 38px;
-}
-
-.bookly-hero::after {
-  content: "";
-  position: absolute;
-  right: 7%;
-  top: 18%;
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 34%, #F7F3FC, #D8CCEE 58%, #BFAEE2 100%);
-  box-shadow: 0 0 80px 28px rgba(255, 255, 255, 0.3);
-  opacity: 0.95;
-}
-
-.bookly-hero-inner { position: relative; z-index: 2; max-width: 34rem; }
-
-.bookly-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: #28243D;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(6px);
-  padding: 8px 15px;
-  border-radius: 999px;
-}
-
-.bookly-hero h1 {
-  margin: 18px 0 0;
-  font-size: clamp(1.9rem, 4vw, 2.8rem);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1.08;
-  color: #161425;
-}
-
-.bookly-hero p {
-  margin: 14px 0 0;
-  font-size: 1.02rem;
-  color: #332F4A;
-  line-height: 1.5;
-}
-
 .bookly-stats {
   margin-top: 10px;
   background: var(--dark);
@@ -429,8 +409,8 @@ div[data-testid="stChatInput"] textarea:focus {
   .bookly-stat:nth-child(2) { border-right: none; }
   .bookly-stat { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
   .bookly-stat:nth-last-child(-n+2) { border-bottom: none; }
-  .bookly-hero { border-radius: 22px; padding: 26px 22px 30px; }
-  .bookly-hero::after { width: 90px; height: 90px; right: 5%; top: 8%; }
+  .bookly-hero { border-radius: 14px; padding: 12px 14px 14px; }
+  .bookly-hero::after { width: 48px; height: 48px; right: 5%; top: 10%; }
 }
 """
 
