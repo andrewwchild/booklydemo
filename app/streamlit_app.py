@@ -14,13 +14,16 @@ import streamlit as st
 
 from agent.memory import ConversationMemory
 from agent.orchestrator import BooklyAgent
+from app.decagon_style import DECAGON_CSS, render_shell_header
+from data.loader import load_catalog
 
 load_dotenv(ROOT / ".env")
 
 st.set_page_config(
     page_title="Bookly Support",
     page_icon="📚",
-    layout="centered",
+    layout="wide",
+    initial_sidebar_state="collapsed",
 )
 
 try:
@@ -45,25 +48,8 @@ GREETING = (
 )
 
 
-from data.loader import load_catalog, load_orders
-
-
-def _load_orders() -> list[dict[str, Any]]:
-    orders = load_orders()
-    return [
-        {"order_id": oid, "email": o["customer_email"], "status": o["status"]}
-        for oid, o in sorted(orders.items())
-    ]
-
-
-def _load_catalog_summary() -> dict[str, Any]:
-    books = load_catalog()["books"]
-    out = [b["title"] for b in books if not b["in_stock"]]
-    return {
-        "total_titles": len(books),
-        "out_of_stock": len(out),
-        "out_of_stock_titles": out,
-    }
+def _catalog_count() -> int:
+    return len(load_catalog()["books"])
 
 
 def init_session() -> None:
@@ -90,47 +76,33 @@ def handle_message(text: str) -> None:
 
 init_session()
 
-st.title("📚 Bookly Support")
-st.caption("We're here to help with your orders and account.")
+st.markdown(f"<style>{DECAGON_CSS}</style>", unsafe_allow_html=True)
+st.markdown(
+    render_shell_header(catalog_count=_catalog_count()),
+    unsafe_allow_html=True,
+)
 
-col1, col2 = st.columns([3, 1])
-with col2:
-    if st.button("New conversation", use_container_width=True):
+_, reset_col, _ = st.columns([5, 1.4, 5])
+with reset_col:
+    st.markdown('<div class="bookly-reset">', unsafe_allow_html=True)
+    if st.button("New chat", use_container_width=True):
         reset_chat()
         st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
-st.divider()
+st.markdown('<div class="section-label">Conversation</div>', unsafe_allow_html=True)
 
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-st.markdown("**Common questions:**")
+st.markdown('<div class="section-label">Common questions</div>', unsafe_allow_html=True)
 cols = st.columns(len(QUICK_PROMPTS))
 for col, prompt in zip(cols, QUICK_PROMPTS):
     if col.button(prompt, use_container_width=True):
         handle_message(prompt)
         st.rerun()
 
-if user_input := st.chat_input("How can we help?"):
+if user_input := st.chat_input("Ask about orders, books, returns, or policies…"):
     handle_message(user_input)
     st.rerun()
-
-with st.sidebar:
-    st.header("Policies")
-    st.markdown(
-        """
-**Returns:** 30 days from delivery  
-**Shipping:** Free over $25  
-**Support hours:** 24/7
-        """
-    )
-    catalog = _load_catalog_summary()
-    st.header("Catalog")
-    st.caption(f"{catalog['total_titles']} titles in our store")
-    if catalog["out_of_stock"]:
-        st.markdown(
-            "**Currently unavailable:** "
-            + ", ".join(catalog["out_of_stock_titles"][:4])
-            + ("…" if len(catalog["out_of_stock_titles"]) > 4 else "")
-        )

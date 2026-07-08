@@ -4,41 +4,84 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bookly Support</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <div class="app">
-    <header>
-      <div class="brand">
-        <span class="logo">📚</span>
-        <div>
-          <h1>Bookly Support</h1>
-          <p class="subtitle">Customer Support</p>
-        </div>
-      </div>
-      <div class="status" id="status">Connecting…</div>
-    </header>
-
-    <main id="chat" aria-live="polite"></main>
-
-    <div class="suggestions" id="suggestions">
-      <button type="button" data-msg="Where is my order?">Order status</button>
-      <button type="button" data-msg="I want a refund">Start a return</button>
-      <button type="button" data-msg="Is Fourth Wing in stock?">Check availability</button>
-      <button type="button" data-msg="What's your return policy?">Return policy</button>
-      <button type="button" data-msg="I can't log in">Password reset</button>
+  <div class="page">
+    <div class="announce">
+      <b>Bookly Support</b> · AI concierge for orders, returns, and recommendations ·
+      <span class="accent">Powered by grounded tools</span>
     </div>
 
-    <form id="form" class="input-row">
-      <input
-        id="input"
-        type="text"
-        placeholder="Type your message…"
-        autocomplete="off"
-        required
-      />
-      <button type="submit">Send</button>
-    </form>
+    <nav class="nav">
+      <div class="brand">
+        <span class="mark">B</span>
+        <span>Bookly</span>
+        <span class="sub">Customer Support</span>
+      </div>
+      <div class="status" id="status">Connecting…</div>
+    </nav>
+
+    <section class="hero-wrap">
+      <div class="hero-card">
+        <div class="hero-inner">
+          <div class="hero-pill">✦ Bookly Support · AI Concierge</div>
+          <h1>The AI concierge for every book lover.</h1>
+          <p>Order tracking, returns, topic recommendations, and account help —
+          clarify-first, grounded in real Bookly data.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-card">
+      <div class="stats-grid">
+        <div class="cell">
+          <div class="n">28</div>
+          <div class="l"><b>Titles</b> in our catalog</div>
+        </div>
+        <div class="cell">
+          <div class="n">8</div>
+          <div class="l"><b>Tools</b> for grounded answers</div>
+        </div>
+        <div class="cell">
+          <div class="n">33</div>
+          <div class="l"><b>Golden tests</b> in eval harness</div>
+        </div>
+        <div class="cell">
+          <div class="n">24/7</div>
+          <div class="l"><b>Support</b> always available</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="chat-shell">
+      <div class="section-label">Conversation</div>
+      <main id="chat" aria-live="polite"></main>
+
+      <div class="section-label">Common questions</div>
+      <div class="suggestions" id="suggestions">
+        <button type="button" data-msg="Where is my order?">Where is my order?</button>
+        <button type="button" data-msg="Books about bitcoin">Books about bitcoin</button>
+        <button type="button" data-msg="I want a refund">I want a refund</button>
+        <button type="button" data-msg="Is Fourth Wing in stock?">Is Fourth Wing in stock?</button>
+        <button type="button" data-msg="What's your return policy?">What's your return policy?</button>
+        <button type="button" data-msg="I need to speak to a real person">Speak to a person</button>
+      </div>
+
+      <form id="form" class="input-row">
+        <input
+          id="input"
+          type="text"
+          placeholder="Ask about orders, books, returns, or policies…"
+          autocomplete="off"
+          required
+        />
+        <button type="submit">Send</button>
+      </form>
+    </div>
   </div>
 
   <script src="/static/chat.js"></script>
