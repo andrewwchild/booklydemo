@@ -1,0 +1,130 @@
+{
+  "topic_aliases": {
+    "bitcoin": ["bitcoin", "btc", "cryptocurrency", "crypto", "blockchain", "satoshi", "digital currency"],
+    "crypto": ["crypto", "cryptocurrency", "bitcoin", "blockchain", "ethereum", "defi", "web3"],
+    "cryptocurrency": ["cryptocurrency", "crypto", "bitcoin", "blockchain", "ethereum"],
+    "blockchain": ["blockchain", "bitcoin", "crypto", "cryptocurrency", "ethereum", "defi"],
+    "finance": ["finance", "money", "investing", "economics", "markets", "bitcoin", "cryptocurrency"],
+    "programming": ["programming", "software", "coding", "developer", "engineering", "computer science"],
+    "fiction": ["fiction", "novel", "literature", "story"],
+    "science fiction": ["science fiction", "sci-fi", "space", "future"],
+    "fantasy": ["fantasy", "magic", "dragons", "epic"],
+    "romance": ["romance", "love", "relationship"],
+    "history": ["history", "historical", "past", "civilization"],
+    "psychology": ["psychology", "mind", "behavior", "thinking", "habits"],
+    "self-help": ["self-help", "productivity", "habits", "personal growth", "motivation"],
+    "memoir": ["memoir", "biography", "autobiography", "life story"]
+  },
+  "BK-001": {
+    "subjects": ["fiction", "classic literature", "american literature"],
+    "description": "A Jazz Age tragedy of wealth, love, and the American Dream on Long Island."
+  },
+  "BK-002": {
+    "subjects": ["fiction", "dystopian", "political fiction", "classic literature"],
+    "description": "A chilling vision of totalitarian surveillance and thought control."
+  },
+  "BK-003": {
+    "subjects": ["science fiction", "fantasy", "space opera", "epic"],
+    "description": "Epic desert-planet saga of politics, prophecy, and spice."
+  },
+  "BK-004": {
+    "subjects": ["history", "anthropology", "nonfiction", "science"],
+    "description": "A sweeping history of humankind from the Stone Age to the present."
+  },
+  "BK-005": {
+    "subjects": ["self-help", "psychology", "productivity", "habits"],
+    "description": "Practical framework for building good habits and breaking bad ones."
+  },
+  "BK-006": {
+    "subjects": ["science fiction", "space", "adventure"],
+    "description": "A lone astronaut must save Earth with an unlikely alien ally."
+  },
+  "BK-007": {
+    "subjects": ["fantasy", "adventure", "classic literature"],
+    "description": "Bilbo Baggins sets out on an unexpected journey with thirteen dwarves."
+  },
+  "BK-008": {
+    "subjects": ["fantasy", "epic", "adventure"],
+    "description": "The complete epic quest to destroy the One Ring."
+  },
+  "BK-009": {
+    "subjects": ["memoir", "education", "nonfiction"],
+    "description": "A memoir of leaving an isolated survivalist family for education."
+  },
+  "BK-010": {
+    "subjects": ["memoir", "biography", "politics"],
+    "description": "Michelle Obama's reflections on life, leadership, and family."
+  },
+  "BK-011": {
+    "subjects": ["fiction", "mystery", "literary fiction"],
+    "description": "A marshland murder mystery and coming-of-age story."
+  },
+  "BK-012": {
+    "subjects": ["psychology", "behavioral economics", "decision-making"],
+    "description": "How two systems in the mind shape judgment and choice."
+  },
+  "BK-013": {
+    "subjects": ["fantasy", "romance", "young adult"],
+    "description": "A dragon-rider fantasy romance at a brutal military college."
+  },
+  "BK-014": {
+    "subjects": ["fantasy", "romance", "young adult"],
+    "description": "Sequel continuing the Empyrean dragon-rider saga."
+  },
+  "BK-015": {
+    "subjects": ["fantasy", "romance", "fairy tale"],
+    "description": "A huntress drawn into a lethal magical court."
+  },
+  "BK-016": {
+    "subjects": ["fiction", "philosophy", "fantasy"],
+    "description": "Between life and death, a library of alternate lives."
+  },
+  "BK-017": {
+    "subjects": ["fiction", "friendship", "gaming"],
+    "description": "Two friends and a decade of creativity, love, and video games."
+  },
+  "BK-018": {
+    "subjects": ["fiction", "philosophy", "spirituality"],
+    "description": "A shepherd boy's journey to find his personal legend."
+  },
+  "BK-019": {
+    "subjects": ["poetry", "philosophy", "spirituality"],
+    "description": "Timeless poetic essays on love, work, joy, and sorrow."
+  },
+  "BK-020": {
+    "subjects": ["fiction", "romance", "contemporary"],
+    "description": "A powerful contemporary romance confronting difficult truths."
+  },
+  "BK-021": {
+    "subjects": ["fiction", "romance", "contemporary"],
+    "description": "Sequel exploring forgiveness and second chances."
+  },
+  "BK-022": {
+    "subjects": ["programming", "software engineering", "computer science"],
+    "description": "A handbook of agile software craftsmanship and clean code practices."
+  },
+  "BK-023": {
+    "subjects": ["programming", "software engineering", "career"],
+    "description": "Classic guide to pragmatic software development and continuous learning."
+  },
+  "BK-024": {
+    "subjects": ["fiction", "classic literature", "family"],
+    "description": "The beloved story of the March sisters growing up during the Civil War."
+  },
+  "BK-025": {
+    "subjects": ["fiction", "historical fiction", "romance"],
+    "description": "A reclusive Hollywood icon finally tells her life story."
+  },
+  "BK-026": {
+    "subjects": ["bitcoin", "cryptocurrency", "economics", "finance"],
+    "description": "The decentralized alternative to central banking — history and economics of Bitcoin."
+  },
+  "BK-027": {
+    "subjects": ["bitcoin", "cryptocurrency", "history", "finance"],
+    "description": "The inside story of Bitcoin and the misfits who reinvented money."
+  },
+  "BK-028": {
+    "subjects": ["cryptocurrency", "ethereum", "blockchain", "defi", "finance"],
+    "description": "How Ethereum and smart contracts sparked the crypto revolution."
+  }
+}

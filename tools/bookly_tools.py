@@ -1,7 +1,7 @@
 import json
 from typing import Any
 
-from data.loader import load_catalog, load_orders, load_policies
+from data.loader import load_book_subjects, load_catalog, load_orders, load_policies
 
 
 def _load_orders() -> dict[str, Any]:
@@ -32,6 +32,135 @@ def _format_stock_message(book: dict[str, Any]) -> str:
     if extra:
         msg += f" {extra}"
     return msg
+
+
+def _enriched_books() -> list[dict[str, Any]]:
+    """Merge catalog titles with subject/description metadata."""
+    books = _load_catalog()["books"]
+    subjects_data = load_book_subjects()
+    enriched: list[dict[str, Any]] = []
+    for book in books:
+        meta = subjects_data.get(book["sku"], {})
+        enriched.append({
+            **book,
+            "subjects": meta.get("subjects", []),
+            "description": meta.get("description", ""),
+        })
+    return enriched
+
+
+def _expand_topic_terms(topic: str) -> list[str]:
+    """Expand a topic query with aliases for broader subject matching."""
+    raw = topic.strip().lower()
+    if not raw:
+        return []
+
+    subjects_data = load_book_subjects()
+    aliases: dict[str, list[str]] = subjects_data.get("topic_aliases", {})
+
+    terms = {raw}
+    for key, values in aliases.items():
+        if raw == key or raw in values:
+            terms.update(values)
+            terms.add(key)
+
+    # Also add individual words for multi-word queries
+    for word in raw.split():
+        if len(word) > 2:
+            terms.add(word)
+        if word in aliases:
+            terms.update(aliases[word])
+
+    return sorted(terms)
+
+
+def _score_book_match(book: dict[str, Any], terms: list[str]) -> int:
+    subjects = [s.lower() for s in book.get("subjects", [])]
+    title = book["title"].lower()
+    author = book["author"].lower()
+    description = book.get("description", "").lower()
+    score = 0
+
+    for term in terms:
+        for subject in subjects:
+            if term == subject:
+                score += 5
+            elif term in subject or subject in term:
+                score += 3
+        if term in title:
+            score += 2
+        if term in author:
+            score += 1
+        if term in description:
+            score += 1
+
+    return score
+
+
+def research_books(topic: str) -> dict[str, Any]:
+    """Search the catalog by subject, topic, title, author, or keyword."""
+    query = topic.strip()
+    if not query:
+        return {
+            "found": False,
+            "message": "What subject or topic are you interested in? For example: bitcoin, psychology, or science fiction.",
+        }
+
+    terms = _expand_topic_terms(query)
+    scored: list[tuple[int, dict[str, Any]]] = []
+    for book in _enriched_books():
+        score = _score_book_match(book, terms)
+        if score > 0:
+            scored.append((score, book))
+
+    scored.sort(key=lambda x: (-x[0], x[1]["title"]))
+    matches = [book for _, book in scored[:5]]
+
+    if not matches:
+        return {
+            "found": False,
+            "query": query,
+            "message": (
+                f"I couldn't find books on '{query}' in our catalog. "
+                "Try a broader topic like cryptocurrency, fantasy, programming, or self-help — "
+                "or ask me to check if a specific title is in stock."
+            ),
+        }
+
+    lines: list[str] = []
+    results: list[dict[str, Any]] = []
+    for book in matches:
+        stock = "in stock" if book["in_stock"] else "out of stock"
+        subjects = ", ".join(book.get("subjects", [])[:3])
+        line = (
+            f"- {book['title']} by {book['author']} (${book['price']:.2f}, {stock})"
+        )
+        if book.get("description"):
+            line += f" — {book['description']}"
+        if subjects:
+            line += f" [{subjects}]"
+        lines.append(line)
+        results.append({
+            "sku": book["sku"],
+            "title": book["title"],
+            "author": book["author"],
+            "price": book["price"],
+            "in_stock": book["in_stock"],
+            "subjects": book.get("subjects", []),
+            "description": book.get("description", ""),
+        })
+
+    return {
+        "found": True,
+        "query": query,
+        "count": len(results),
+        "results": results,
+        "message": (
+            f"Here are {len(results)} Bookly pick{'s' if len(results) != 1 else ''} for '{query}':\n"
+            + "\n".join(lines)
+            + "\n\nWant me to check availability for any of these?"
+        ),
+    }
 
 
 def check_stock(book_title: str) -> dict[str, Any]:

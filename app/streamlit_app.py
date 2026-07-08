@@ -31,6 +31,7 @@ except Exception:
 
 QUICK_PROMPTS = [
     "Where is my order?",
+    "Books about bitcoin",
     "I want a refund",
     "Is Fourth Wing in stock?",
     "What's your return policy?",
@@ -39,7 +40,8 @@ QUICK_PROMPTS = [
 
 GREETING = (
     "Hi! I'm Bookly Support. I can help with order status, returns, "
-    "book availability, shipping policies, or password resets. How can I help you today?"
+    "book availability, topic recommendations, shipping policies, or password resets. "
+    "How can I help you today?"
 )
 
 

@@ -6,6 +6,7 @@ from tools.bookly_tools import (
     get_policy,
     initiate_refund,
     lookup_order,
+    research_books,
     send_password_reset,
     verify_customer_identity,
 )
@@ -111,6 +112,27 @@ TOOL_DEFINITIONS: list[dict[str, Any]] = [
     {
         "type": "function",
         "function": {
+            "name": "research_books",
+            "description": (
+                "Search and recommend books by subject, topic, or keyword. "
+                "Use when a customer asks for book recommendations, wants to browse by topic "
+                "(e.g. bitcoin, psychology, science fiction), or mentions a subject without a specific title."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "topic": {
+                        "type": "string",
+                        "description": "Subject or topic to research, e.g. 'bitcoin', 'self-help', 'programming'",
+                    }
+                },
+                "required": ["topic"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "check_stock",
             "description": (
                 "Check if a book is in stock and how many copies are available. "
@@ -182,6 +204,7 @@ TOOL_HANDLERS: dict[str, ToolHandler] = {
     "initiate_refund": initiate_refund,
     "get_policy": get_policy,
     "check_stock": check_stock,
+    "research_books": research_books,
     "send_password_reset": send_password_reset,
     "escalate_to_human": escalate_to_human,
 }

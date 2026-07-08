@@ -230,6 +230,33 @@
       "price": 14.99,
       "format": "paperback",
       "restock_date": "2026-08-01"
+    },
+    {
+      "sku": "BK-026",
+      "title": "The Bitcoin Standard",
+      "author": "Saifedean Ammous",
+      "in_stock": true,
+      "quantity": 14,
+      "price": 22.00,
+      "format": "hardcover"
+    },
+    {
+      "sku": "BK-027",
+      "title": "Digital Gold",
+      "author": "Nathaniel Popper",
+      "in_stock": true,
+      "quantity": 9,
+      "price": 17.99,
+      "format": "paperback"
+    },
+    {
+      "sku": "BK-028",
+      "title": "The Infinite Machine",
+      "author": "Camila Russo",
+      "in_stock": true,
+      "quantity": 6,
+      "price": 18.50,
+      "format": "paperback"
     }
   ]
 }

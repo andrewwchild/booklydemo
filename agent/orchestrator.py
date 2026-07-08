@@ -114,6 +114,83 @@ class BooklyAgent:
                 break
 
         self._extract_book_title(memory, text)
+        if self._is_book_research_query(text):
+            topic = self._extract_topic(text)
+            if topic:
+                memory.set_slot("topic", topic)
+
+    def _extract_topic(self, text: str) -> str:
+        lower = text.lower().strip()
+        prefixes = (
+            "books about ",
+            "book about ",
+            "books on ",
+            "book on ",
+            "recommend books on ",
+            "recommendations for ",
+            "recommend ",
+            "looking for books on ",
+            "looking for books about ",
+        )
+        for prefix in prefixes:
+            if lower.startswith(prefix):
+                return text[len(prefix) :].strip()
+        return text.strip()
+
+    def _is_book_research_query(self, text: str) -> bool:
+        lower = text.lower().strip()
+        triggers = [
+            "books about",
+            "book about",
+            "books on",
+            "book on",
+            "recommend",
+            "recommendation",
+            "suggest",
+            "looking for a book",
+            "looking for books",
+            "best books",
+            "read about",
+            "learn about",
+            "help me find",
+            "search for books",
+            "what books",
+            "any books",
+        ]
+        if any(t in lower for t in triggers):
+            return True
+
+        words = lower.split()
+        if 1 <= len(words) <= 3:
+            blocked = [
+                "refund",
+                "return",
+                "order",
+                "track",
+                "tracking",
+                "shipment",
+                "delivery",
+                "password",
+                "login",
+                "reset",
+                "policy",
+                "shipping",
+                "hello",
+                "hi",
+                "hey",
+                "help",
+                "speak",
+                "human",
+                "stock",
+            ]
+            if re.search(r"ORD-\d{4}", text, re.IGNORECASE):
+                return False
+            if re.search(r"[\w.+-]+@[\w.-]+\.\w+", text):
+                return False
+            if any(b in lower for b in blocked):
+                return False
+            return True
+        return False
 
     def _extract_book_title(self, memory: ConversationMemory, text: str) -> None:
         catalog = _load_catalog()["books"]
@@ -164,6 +241,8 @@ class BooklyAgent:
             return "stock"
         if any(w in lower for w in ["do you have", "do you carry", "do you sell"]):
             return "stock"
+        if self._is_book_research_query(text):
+            return "book_research"
         if any(w in lower for w in ["order", "tracking", "shipment", "delivery", "where"]):
             return "order_status"
         if any(w in lower for w in ["password", "login", "reset", "log in", "can't log"]):
@@ -244,6 +323,25 @@ class BooklyAgent:
         memory.awaiting_slot = None
         return result["message"]
 
+    def _handle_book_research(
+        self, memory: ConversationMemory, user_message: str, tool_calls: list[dict[str, Any]]
+    ) -> str:
+        topic = memory.slots.get("topic") or self._extract_topic(user_message)
+        if not topic:
+            memory.pending_intent = "book_research"
+            memory.awaiting_slot = "topic"
+            return (
+                "I'd love to help you find something to read. "
+                "What subject or topic are you interested in? (e.g. bitcoin, psychology, fantasy)"
+            )
+
+        args = {"topic": topic}
+        result = execute_tool("research_books", args)
+        tool_calls.append({"name": "research_books", "arguments": args, "result": result})
+        memory.pending_intent = None
+        memory.awaiting_slot = None
+        return result["message"]
+
     def _handle_refund(self, memory: ConversationMemory, tool_calls: list[dict[str, Any]]) -> str:
         missing = memory.missing_refund_slots()
         memory.pending_intent = "refund"
@@ -318,6 +416,8 @@ class BooklyAgent:
             reply = self._handle_order_status(memory, tool_calls)
         elif memory.pending_intent == "stock" or intent == "stock":
             reply = self._handle_stock_check(memory, user_message, tool_calls)
+        elif memory.pending_intent == "book_research" or intent == "book_research":
+            reply = self._handle_book_research(memory, user_message, tool_calls)
         elif memory.pending_intent == "password_reset" or intent == "password_reset":
             if "customer_email" not in memory.slots:
                 memory.pending_intent = "password_reset"
@@ -342,7 +442,8 @@ class BooklyAgent:
         elif intent == "greeting":
             reply = (
                 "Hi! I'm Bookly Support. I can help with order status, returns, "
-                "book availability, shipping policies, or password resets. What can I help with today?"
+                "book availability, topic recommendations, shipping policies, or password resets. "
+                "What can I help with today?"
             )
         elif memory.awaiting_slot == "customer_email" and "customer_email" in memory.slots:
             args = {"email": memory.slots["customer_email"]}
@@ -353,6 +454,8 @@ class BooklyAgent:
             reply = result["message"]
         elif memory.awaiting_slot == "book_title" and "book_title" in memory.slots:
             reply = self._handle_stock_check(memory, user_message, tool_calls)
+        elif memory.awaiting_slot == "topic" and "topic" in memory.slots:
+            reply = self._handle_book_research(memory, user_message, tool_calls)
         elif memory.awaiting_slot and memory.awaiting_slot in memory.slots:
             if memory.pending_intent == "refund":
                 reply = self._handle_refund(memory, tool_calls)
@@ -360,16 +463,18 @@ class BooklyAgent:
                 reply = self._handle_order_status(memory, tool_calls)
             elif memory.pending_intent == "stock":
                 reply = self._handle_stock_check(memory, user_message, tool_calls)
+            elif memory.pending_intent == "book_research":
+                reply = self._handle_book_research(memory, user_message, tool_calls)
             else:
                 reply = (
                     "I want to make sure I help with the right thing. "
-                    "Are you asking about an order, book availability, a return/refund, "
+                    "Are you asking about an order, book recommendations, availability, a return/refund, "
                     "shipping policy, or account access?"
                 )
         else:
             reply = (
                 "I want to make sure I help with the right thing. "
-                "Are you asking about an order, book availability, a return/refund, "
+                "Are you asking about an order, book recommendations, availability, a return/refund, "
                 "shipping policy, or account access?"
             )
 

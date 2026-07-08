@@ -180,6 +180,24 @@
       "turns": ["Is Sapiens available?"],
       "expect_tools": ["check_stock"],
       "expect_reply_contains": ["in stock"]
+    },
+    {
+      "id": "research_bitcoin",
+      "turns": ["bitcoin"],
+      "expect_tools": ["research_books"],
+      "expect_reply_contains": ["Bitcoin Standard"]
+    },
+    {
+      "id": "research_books_about",
+      "turns": ["Books about psychology"],
+      "expect_tools": ["research_books"],
+      "expect_reply_contains": ["Thinking, Fast and Slow"]
+    },
+    {
+      "id": "research_programming",
+      "turns": ["Recommend books on programming"],
+      "expect_tools": ["research_books"],
+      "expect_reply_contains": ["Clean Code"]
     }
   ]
 }

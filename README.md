@@ -39,6 +39,7 @@ Host the Streamlit app on [Streamlit Community Cloud](https://share.streamlit.io
 | Returns | `verify_customer_identity` + `initiate_refund` | Identity check before processing returns |
 | Escalation | `escalate_to_human` | Hand off to a specialist with conversation summary |
 | Inventory | `check_stock` | Real-time book availability |
+| Discovery | `research_books` | Recommendations by subject or topic |
 | Policies | `get_policy` | Shipping, returns, and account help |
 | Account | `send_password_reset` | Password reset emails |
 

@@ -7,7 +7,7 @@ from importlib import resources
 from pathlib import Path
 from typing import Any
 
-_DATA_FILES = frozenset({"orders.json", "catalog.json", "policies.json"})
+_DATA_FILES = frozenset({"orders.json", "catalog.json", "policies.json", "book_subjects.json"})
 
 
 def _read_json_file(path: Path) -> Any:
@@ -63,6 +63,10 @@ def load_orders() -> dict[str, Any]:
 
 def load_policies() -> dict[str, Any]:
     return load_json("policies.json")
+
+
+def load_book_subjects() -> dict[str, Any]:
+    return load_json("book_subjects.json")
 
 
 def load_catalog() -> dict[str, Any]:
