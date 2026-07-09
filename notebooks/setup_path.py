@@ -1,4 +1,4 @@
-"""Resolve the Bookly project root when running from Jupyter / Cursor notebooks."""
+"""Resolve the Bookly project root when running from Jupyter / VS Code notebooks."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ def find_project_root() -> Path:
     """Walk upward until we find the repo root (contains agent/ + requirements.txt)."""
     candidates: list[Path] = []
 
-    ipynb = globals().get("__vsc_ipynb_file__")  # set by VS Code / Cursor
+    ipynb = globals().get("__vsc_ipynb_file__")  # set by VS Code's notebook runtime
     if ipynb:
         candidates.append(Path(ipynb).resolve().parent)
 
