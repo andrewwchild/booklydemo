@@ -8,3 +8,12 @@ dist/
 build/
 .ipynb_checkpoints/
 bookly-cs-agent/
+
+# Presentation decks and talk tracks — kept locally only, not published
+Bookly_CS_Agent_Pitch.pptx
+Bookly_CS_Agent_Demo_Script.docx
+Bookly_CS_Agent_One_Pager.pdf
+Bookly_Interview_Deck.pptx
+INTERVIEW_TALK_TRACK.md
+DEMO_SCRIPT.md
+PITCH_DECK.md
